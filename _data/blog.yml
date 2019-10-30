@@ -8,9 +8,6 @@
 
 - name: Linux
   href: /linux/
-  
- - name: Cheatsheet
-   href: /cheatsheet
 
 # Don't display donation page: change donation to off at file '_config.yml'
 #- name: Donate
