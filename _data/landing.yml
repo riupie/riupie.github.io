@@ -31,11 +31,11 @@
   page: blog/
   css: testimonials navy-section
 
-#- id: cheatsheet
+- id: cheatsheet
 #  i18n: nav.cheatsheet
-#  name: Cheatsheet
+  name: Cheatsheet
 #  tpl: cheatsheet.html
-#  page: cheatsheet
+  page: cheatsheet
  #- id: links
   #i18n: nav.link
   # name: Links
