@@ -30,11 +30,6 @@
   tpl: blog.html
   page: blog/
   css: testimonials navy-section
-
-- id: link
-  name: Cheatsheet
-  tpl: links.html
-  page: cheatsheet
   
  #- id: links
   #i18n: nav.link
