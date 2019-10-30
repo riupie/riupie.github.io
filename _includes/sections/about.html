@@ -1,3 +1,33 @@
+<style>
+  /* DEMO-SPECIFIC STYLES */
+  .typewriter h1 {
+    color: #000000;
+    font-family: monospace;
+    overflow: hidden; /* Ensures the content is not revealed until the animation */
+    border-right: .15em solid orange; /* The typwriter cursor */
+    white-space: nowrap; /* Keeps the content on a single line */
+    margin: 10px auto; /* Gives that scrolling effect as the typing happens */
+    letter-spacing: .15em; /* Adjust as needed */
+    animation: 
+      typing 3.5s steps(30, end),
+      blink-caret .5s step-end infinite;
+  }
+  
+  /* The typing effect */
+  @keyframes typing {
+    from { width: 0 }
+    to { width: 50% }
+  }
+  
+  /* The typewriter cursor effect */
+  @keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: orange }
+  }
+  </style>  
+
+<script src="{{ base.url | prepend: site.url }}/static/js/type.js"></script>
+
 <div class="container" id="i18_about_me">
     <div class="row m-b-lg">
         <div class="col-lg-12 text-center">
@@ -62,3 +92,15 @@
         </div>
     </div>
 </div>
+
+<div class="container" id="i18_link">
+      <div class="row m-b-lg">
+          <div class="col-lg-12 text-center">
+<h1>
+  <a href="" class="typewrite" data-period="2000" data-type='[ "Hi, My name is Agung.", "I am a Sysops Engineer" ]'>
+    <span class="wrap"></span>
+  </a>
+</h1>
+          </div>
+      </div>
+  </div>
