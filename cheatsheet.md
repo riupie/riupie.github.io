@@ -2,7 +2,7 @@
 layout: post
 title:  "Cheatsheet"
 comments:false
-permalink: /cheatsheet
+permalink: /test
 ---
 
 #### Rsync over SSH on Spesific Port
