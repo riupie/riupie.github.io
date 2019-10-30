@@ -31,10 +31,10 @@
   page: blog/
   css: testimonials navy-section
 
-- id: cheatsheet
-  name: Cheatsheet
-  tpl: cheatsheet.html
-  page: cheatsheet
+#- id: cheatsheet
+#  name: Cheatsheet
+#  tpl: cheatsheet.html
+#  page: cheatsheet
   #- id: links
   #i18n: nav.link
   # name: Links
