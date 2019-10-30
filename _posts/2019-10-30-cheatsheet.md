@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: page
 title:  "Cheatsheet"
 comments:false
 permalink: /cheatsheet
