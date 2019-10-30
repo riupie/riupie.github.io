@@ -4,7 +4,7 @@
     detail: Telkom Akses Semarang
     i18n: company_c
   desc:
-    detail: Maintenance perangkat pada jaringan MSAN dan GPON.
+    detail: Maintaining MSAN and GPON network devices.
     i18n: company_c_desc
   date:
     detail: 2016
@@ -18,7 +18,7 @@
     detail: Merapi Online
     i18n: company_a
   desc:
-    detail: Maintenance jaringan, server dan PC.
+    detail: Maintaining and configuring network device for hotspot area, NAS Storage, and PC Client.
     i18n: company_a_desc
   date:
     detail: Januari 2018
@@ -32,7 +32,7 @@
     detail: Boer Technology
     i18n: company_b
   desc:
-    detail: SysOps
+    detail:
     i18n: company_b_desc
   date:
     detail: Maret 2019
