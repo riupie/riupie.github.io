@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: blog
 title:  "Cheatsheet"
 desc: "All cheatsheet of my working use case"
 keywords: "linux, storage, networking, security"
