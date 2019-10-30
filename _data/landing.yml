@@ -33,7 +33,7 @@
 
 - id: blog
   name: Cheatsheet
-  page: blog/
+  page: cheatsheet
   
  #- id: links
   #i18n: nav.link
