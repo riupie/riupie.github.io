@@ -39,4 +39,5 @@
   
 - id: link
   name: Cheatsheet
+  tpl: footer.html
   page: cheatsheet
