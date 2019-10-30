@@ -1,29 +1,31 @@
 <style>
-    /* DEMO-SPECIFIC STYLES */
-    .typewriter h1 {
-      color: #000000;
-      font-family: monospace;
-      overflow: hidden; /* Ensures the content is not revealed until the animation */
-      border-right: .15em solid orange; /* The typwriter cursor */
-      white-space: nowrap; /* Keeps the content on a single line */
-      margin: 10px auto; /* Gives that scrolling effect as the typing happens */
-      letter-spacing: .15em; /* Adjust as needed */
-      animation: 
-        typing 3.5s steps(30, end),
-        blink-caret .5s step-end infinite;
-    }
-    
-    /* The typing effect */
-    @keyframes typing {
-      from { width: 0 }
-      to { width: 50% }
-    }
-    
-    /* The typewriter cursor effect */
-    @keyframes blink-caret {
-      from, to { border-color: transparent }
-      50% { border-color: orange }
-    }
+@import 'https://fonts.googleapis.com/css?family=Roboto';
+html, body {
+	background-color: #000;
+}
+h2, a, p {
+	color: #fff;
+	font-family: Roboto;
+	text-decoration: none;
+}
+p>a {
+	color: #fd084a;
+}
+.blink {
+  animation: blink 0.5s infinite;
+}
+@keyframes blink{
+  to { opacity: .0; }
+}
+.flex {
+	display: flex;
+}
+.header-sub-title {
+  color: #fff;
+  font-family: "Courier";
+  font-size: 20px;
+  padding: 0.1em;
+}
     </style>
 
 <script>
@@ -68,3 +70,18 @@ function deletingEffect() {
 typingEffect();
     </script>
     
+    
+    <div class="container" id="i18_link">
+        <div class="row m-b-lg">
+            <div class="col-lg-12 text-center">
+<div class="flex">
+	<p class="header-sub-title" id="word"></p><p class="header-sub-title blink">|</p>
+</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 text-center m-t-lg m-b-lg">
+                <p id="jalpc_site_pv"><strong>&copy; {{ 'now' | date: "%Y" }} {{ site.title }}</strong></p>
+            </div>
+        </div>
+    </div>
