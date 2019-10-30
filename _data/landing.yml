@@ -31,7 +31,7 @@
   page: blog/
   css: testimonials navy-section
 
-- id: blog
+- id: link
   name: Cheatsheet
   page: cheatsheet
   
