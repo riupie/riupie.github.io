@@ -1,11 +1,15 @@
 ---
 layout: post
 title:  "Cheatsheet"
-date: 2019-10-29
+comments:false
+date:   2017-12-21
 desc: "All cheatsheet of my working use case"
 keywords: "linux, storage, networking, security"
-comments:false
+categories: [page]
+tags: [linux]
+icon: icon-html
 ---
+
 
 #### Rsync over SSH on Spesific Port
 
