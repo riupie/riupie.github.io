@@ -5,7 +5,7 @@ date:   2019-10-30
 desc: "All cheatsheet of my working use case"
 keywords: "linux, storage, networking, security"
 categories: [page]
-tags: [linux]
+comments: false
 icon: icon-html
 ---
 
