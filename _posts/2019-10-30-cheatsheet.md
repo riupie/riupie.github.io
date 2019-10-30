@@ -1,10 +1,10 @@
 ---
 layout: post
 title:  "Cheatsheet"
+date: 2019-10-29
 desc: "All cheatsheet of my working use case"
 keywords: "linux, storage, networking, security"
 comments:false
-#permalink: /cheatsheet
 ---
 
 #### Rsync over SSH on Spesific Port
