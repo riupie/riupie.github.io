@@ -1,11 +1,11 @@
 ---
 layout: post
 title:  "Cheatsheet"
+comments:false
 date:   2019-10-30
 desc: "All cheatsheet of my working use case"
 keywords: "linux, storage, networking, security"
 categories: [page]
-comment: false
 icon: icon-html
 ---
 
