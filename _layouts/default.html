@@ -12,7 +12,7 @@ layout: compress
     {% endif %}
 
 <body id="page-top" class="landing-page">
-
+<script src="{{ base.url | prepend: site.url }}/static/assets/type.js">
     {% if page.title != 'index' %}
         {% include blog_header.html %}
     {% endif %}
