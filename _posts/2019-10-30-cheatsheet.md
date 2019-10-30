@@ -1,10 +1,10 @@
 ---
-layout: blog
+layout: post
 title:  "Cheatsheet"
 desc: "All cheatsheet of my working use case"
 keywords: "linux, storage, networking, security"
 comments:false
-permalink: /cheatsheet
+#permalink: /cheatsheet
 ---
 
 #### Rsync over SSH on Spesific Port
