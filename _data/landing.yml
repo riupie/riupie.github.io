@@ -33,6 +33,7 @@
 
 - id: link
   name: Cheatsheet
+  tpl: links.html
   page: cheatsheet
   
  #- id: links
