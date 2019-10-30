@@ -31,6 +31,9 @@
   page: blog/
   css: testimonials navy-section
   
+- id: blog
+  name: Cheatsheet
+  page: cheatsheet
  #- id: links
   #i18n: nav.link
   # name: Links
