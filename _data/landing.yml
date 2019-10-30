@@ -1,10 +1,5 @@
 # index page sections
 # custom following lines to edit your index page
-
-- id: link
-  name: Cheatsheet
-  page: cheatsheet
-  tpl: type.html
   
 - id: about-me
   i18n: nav.about_me
@@ -12,6 +7,11 @@
   tpl: about.html
   css:
 
+- id: link
+  name: Cheatsheet
+  page: cheatsheet
+  tpl: type.html
+  
 - id: career
   i18n: nav.career
   name: Career
