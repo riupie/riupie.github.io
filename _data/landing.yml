@@ -32,7 +32,6 @@
   css: testimonials navy-section
 
 - id: blog
-  i18n: nav.blog
   name: Cheatsheet
   tpl: blog.html
   page: blog/
