@@ -33,7 +33,6 @@
 
 - id: blog
   name: Cheatsheet
-  tpl: blog.html
   page: blog/
   
  #- id: links
