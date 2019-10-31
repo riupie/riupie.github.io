@@ -8,19 +8,19 @@
   img: /static/assets/img/landing/cert.png
   desc: 2019 - 2023
 
-- name: MikroTik Certified Network Associate (MTCNA)
-  i18n: MikroTik Certified Network Associate
-  #gh_user: jarrekk
-  #repo: Jalpc
-  img: /static/assets/img/landing/cert.png
-  desc: 2016 - 2019
-
 - name: Certified Openstack Administrator (COA)
   i18n: Certified Openstack Administrator (COA)
   #gh_user: python
   #repo: cpython
   img: /static/assets/img/landing/cert.png
   desc: 2019 - 2022
+
+- name: MikroTik Certified Network Associate (MTCNA)
+  i18n: MikroTik Certified Network Associate
+  #gh_user: jarrekk
+  #repo: Jalpc
+  img: /static/assets/img/landing/cert.png
+  desc: 2016 - 2019
 
 - name: Ethical Hacking Fundamental v1
   i18n: Ethical Hacking Fundamental v1
