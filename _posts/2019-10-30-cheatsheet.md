@@ -40,4 +40,9 @@ $ apt list -a <package_name>
 #example version 1.15.x#
 $ sudo apt update;sudo apt install -qy kubelet=1.15.5-00 kubectl=1.15.5-00 kubeadm=1.15.5-00
 ```
+### Open Spesific Port on Centos 7
+
+```
+iptables -I INPUT 5 -p tcp -m state --state NEW -m tcp --dport 9100 -j ACCEPT
+```
 ---
