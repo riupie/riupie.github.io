@@ -45,4 +45,9 @@ $ sudo apt update;sudo apt install -qy kubelet=1.15.5-00 kubectl=1.15.5-00 kubea
 ```
 iptables -I INPUT 5 -p tcp -m state --state NEW -m tcp --dport 9100 -j ACCEPT
 ```
+### Replace String Using Sed
+
+```
+sed -i 's/\$\$PATH\$\$/\/var\/lib\/pgsql/g'
+```
 ---
