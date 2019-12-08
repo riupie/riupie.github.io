@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Ansible Basic Series: Menggunakn Ad Hoc Command"
+title:  "Ansible Basic Series: Menggunakan Ad Hoc Command"
 comments: true
 date:   2019-12-08
 desc: "Ansible Basic Series"
