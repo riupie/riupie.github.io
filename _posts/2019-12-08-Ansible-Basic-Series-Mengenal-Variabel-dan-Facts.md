@@ -20,6 +20,7 @@ Jika terdapat variabel yang sama diantara ketiganya, maka alur overriding nya ad
 
 Pendefinisian variabel dapat dilakukan dengan mendefinisikannya langsung pada playbook atau melalui sebuah file variabel. Berikut perbedaannya:
 
+
 #### Secara langsung
 
 ```
@@ -36,6 +37,7 @@ Pendefinisian variabel dapat dilakukan dengan mendefinisikannya langsung pada pl
 ...
 
 ```
+
 #### Secara tidak langsung
 
 ```
@@ -54,6 +56,7 @@ home: /home/riupie
 ```
 ### Pendefinisian variabel pada host
 Pendefinisian variabel pada host dapat dilakukan dengan beberapa cara, misal dengan mendefinisikan langsung pada file inventory.
+
 
 #### Untuk satu host
 
@@ -134,4 +137,78 @@ Output dari sebuah task dapat disimpan ke dalam sebuah variabel dengan menggunak
     
     - debug: var=install_output
 ```
+
+### Vault: Sebuah cara menyimpan variabel yang bersifat confidential
+
+Vault merupakan sebuah file yang digunakan untuk menyimpan variabel-variabel yang sensitif dan bersifat rahasia seperti password, token, dll. Variabel-variabel yang tersimpan di dalam vault akan terenkripsi.
+
+#### Membuat file vault baru
+```
+$ ansible-vault create vault
+Vault password: rahasia
+```
+
+#### Melihat vault
+```
+ansible-vault view vault
+```
+
+#### Membuat file vault dengan password dari sebuah file
+```
+ansible-vault create vault --vault-password-file=secret
+```
+
+#### Membuat vault dari *existing* file
+```
+ansible-vault encrypt test-vault --output=vault
+```
+
+#### Menjalankan vault dalam Playbook
+```
+ansible-playbook --vault-id @prompt mypkaybook.yml
+```
+
+### Ansible Fact
+
+Fact merupakan variabel-variabel yang secara otomatis di *generate* oleh Ansible dan berisi informasi mengenai host.
+
+#### Menampilkan Fact dengan Playbook
+```
+---
+- name: Dump Fact dengan Playbook
+  hosts: all
+  tasks:
+    - name: Print semua facts
+      debug:
+        var: ansible_facts
+```
+
+#### Menampilkan Fact dengan Ad-Hoc
+```
+ansible servera.lab.com -m setup
+```
+
+#### Mematikan Fact Gathering
+Terkadang kita perlu mematikan fact gathering untuk mempercepat running ansible.
+
+```
+---
+- name: Matikan fact
+  hosts: webserver
+  gather_facts: no
+
+. . .
+```
+
+#### Custom Fact
+
+Custom Fact bisa dibuat di direktori /etc/ansible/fact.d. Di dalam direktori ini kemudian bisa dibuat file fact dengan format *.fact.
+
+```
+[packages]
+web_package = httpd
+db_package = mariadb-server
+```
+File fact diatas dapat dipanggil dengan variabel ansible_facts.ansible_local['packages']['web_package'].
+
 ---
