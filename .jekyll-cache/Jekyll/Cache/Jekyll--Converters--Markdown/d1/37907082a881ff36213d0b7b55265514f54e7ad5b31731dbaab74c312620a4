@@ -1,0 +1,2 @@
+I"9<p>Dalam sistem operasi berbasis Linux agar seorang user dapat mengekseskusi perintah-perintah level admin/root, user tersebut perlu diberi akses <code class="highlighter-rouge">sudo</code> terhadap root. Perintah sudo (superuser do) berfungsi untuk mengijinkan seorang user untuk menjalankan sebuah program sebagai user lain (yang dalam kebanyakan kasus sebagai user root). Ada beberapa cara untuk memberi akses sudo kepada user diantaranya yaitu memasukkan user tersebut ke group sudo (Debian based) atau wheel (Centos &amp; RHEL) dan menambahkan ke sudoer file.</p>
+:ET

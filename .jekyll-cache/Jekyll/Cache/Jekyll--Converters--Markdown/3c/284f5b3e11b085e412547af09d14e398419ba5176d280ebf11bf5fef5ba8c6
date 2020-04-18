@@ -1,0 +1,55 @@
+I"	<p>Ad-hoc command merupakan perintah otomasi pada Ansible yang hanya menggunakan satu baris perintah, misal :</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ansible all -m ping
+</code></pre></div></div>
+<p>Perintah diatas akan menjalankan perintah ping ke semua node dalam inventory ansible. Adapun komponen paling dasar untuk menjalankan dan menggunakan Ad Hoc command pada Ansible yaitu:</p>
+<ul>
+  <li>ansible.cfg</li>
+  <li>inventory file</li>
+  <li>Ansible itu sendiri</li>
+</ul>
+
+<h4 id="ansiblecfg">ansible.cfg</h4>
+
+<p>File ini berisi konfigurasi ansible seperti user apa yang akan digunakan untuk eksekusi di remote host, bagaimana metode eksekusi perintahnya dan inventory mana yang akan digunakan. Adapun format dari ansible.cfg adalah sebagai berikut:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[defaults]
+inventory=inventory/inventory
+remote_user=riupie
+[privilege_escalation]
+become=false
+become_user=root
+become_method=sudo
+become_ask_pass=false
+</code></pre></div></div>
+<p>By default, saat perintah ansible dijalankan, ansible akan mengecek pada working directory apakah ada file ansible.cfg. Jika tidak ada, maka pengecekan akan dilakukan di ~/.ansible.cfg dan terakhir akan mengecek default konfigurasi pada /etc/ansible/ansible.cfg.</p>
+
+<h4 id="inventory">Inventory</h4>
+<p>Inventory merupakan file yang berisi kumpulan host-host yang di-manage oleh Ansible. Adapun format nya sebagai berikut:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[datacenter:children]
+webserver
+dbserver
+[webserver]
+web[1:3].myserver.com
+[dbserver]
+192.168.1.[10:200]
+[dns]
+[a:d].mydns.com
+</code></pre></div></div>
+<h4 id="contoh-penggunaan">Contoh penggunaan</h4>
+<p>Menambahkan MOTD ke semua webserver yang kita manage.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ansible webserver -m copy -a 'content="Warning! Authorized Access Only!" dest=/etc/motd' --become
+</code></pre></div></div>
+<p>Option -a digunakan untuk menambahkan parameter-parameter tertentu sesuai dengan module yang sedang digunakan. Sedangkan option –become digunakan agar eksekusi perintah dijalankan sebagai root. Lalu untuk mengecek apakah teks yang sudah kita eksekusi sudah masuk ke file /etc/motd dapat menggunakan command ad-hoc berikut:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ansible webserver -m command -a 'cat /etc/motd'
+</code></pre></div></div>
+<p>Lalu, bagaiamana caranya untuk mengetahui parameter-parameter yang tersedia untuk suatu modul? Gunakan perintah berikut:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ansible-doc -s [modul_name]
+</code></pre></div></div>
+
+<hr />
+:ET

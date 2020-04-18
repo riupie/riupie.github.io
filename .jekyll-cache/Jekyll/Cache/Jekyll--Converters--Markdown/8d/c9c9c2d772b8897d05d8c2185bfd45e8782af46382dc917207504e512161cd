@@ -1,0 +1,25 @@
+I"<p>Dalam sistem operasi berbasis Linux agar seorang user dapat mengekseskusi perintah-perintah level admin/root, user tersebut perlu diberi akses <code class="highlighter-rouge">sudo</code> terhadap root. Perintah sudo (superuser do) berfungsi untuk mengijinkan seorang user untuk menjalankan sebuah program sebagai user lain (yang dalam kebanyakan kasus sebagai user root). Ada beberapa cara untuk memberi akses sudo kepada user diantaranya yaitu memasukkan user tersebut ke group sudo (Debian based) atau wheel (Centos &amp; RHEL) dan menambahkan ke sudoer file.</p>
+
+<p>Untuk cara yang kedua bisa dilakukan dengan menambahkan beberapa syntax ke direktori /etc/sudoers.d/. Adapun format syntax nya sendiri seperti berikut:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>USER/GROUP HOST_COMPUTER= (USER:GROUP) COMMAND   
+</code></pre></div></div>
+
+<p>Jadi, semisal dalam sudoer file terdapat syntax berikut:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>riupie ALL=(ALL:ALL) ALL
+%wheel ALL=(ALL:ALL) ALL
+</code></pre></div></div>
+
+<p>Syntax pertama dapat dibaca: User riupie dapat menjalankan perintah sudo di komputer manapun sebagai user apapun dan group apapun dan perintah apapaun. Syntax kedua hampir sama, hanya saja tanda (%) mengindikasikan obyeknya adalah group. Lalu bagaimana penggunaannya? Pemberian akses pada user riupie diatas membuat user riupie dapat menjalankan perintah berikut:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo -u andy -g admin id
+</code></pre></div></div>
+<p>User riupie dapat menjalankan perintah <code class="highlighter-rouge">id</code> sebagai user andy pada grup admin. Seringkali, kita juga akan menemui format syntax berikut:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>riupie ALL=(ALL:ALL) NOPASSWD: ALL
+</code></pre></div></div>
+<p>Hal ini berarti bahwa user riupie tidak perlu memasukkan password ketika menjalankan perintah sudo.
+—</p>
+
+:ET
