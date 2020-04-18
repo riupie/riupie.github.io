@@ -1,7 +1,0 @@
-I"<p>Variabel dalam ansible terdiri dari 3 <em>scope level</em> yaitu:</p>
-<ul>
-  <li>Global scope	: Terdapat di ansible.cfg</li>
-  <li>Play scope	: Terdapat dalam playbook</li>
-  <li>Host scope	: Terdapat dalam inventory, fact gathering atau task.</li>
-</ul>
-:ET
