@@ -47,7 +47,7 @@ I will use 3 servers (1 Controller Node+ 2 Compute Node) and 3 network subnets w
 </tr>
 </tbody>
 </table>
-
+</br>
 
 
 In this first stage, I will deploy Ceph Cluster.
