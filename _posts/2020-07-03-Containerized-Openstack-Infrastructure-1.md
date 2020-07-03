@@ -19,7 +19,7 @@ I will use 3 servers (1 Controller Node+ 2 Compute Node) and 3 network subnets w
 2. Storage Network: Network for ceph services communication.
 3. Openstack Network: Network for openstack internal services communication.
 
-![Design Topology](images/2020-os_topology.png)
+![Design Topology](/static/assets/img/blog/openstack-kolla/2020-os_topology.png)
 
 ### IP Information
 
