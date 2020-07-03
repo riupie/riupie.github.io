@@ -29,11 +29,7 @@ I will use 3 servers (1 Controller Node+ 2 Compute Node) and 3 network subnets w
 | server1 | 10.50.50.11 | 10.51.51.11 |
 | server2 | 10.50.50.12 | 10.51.51.12 |
 
-| Hostname | Storage | Openstack |
-| -------------- | -------------- | -------------- | 
-| server0 | 10.50.50.10 | 10.51.51.10 |
-| server1 | 10.50.50.11 | 10.51.51.11 |
-| server2 | 10.50.50.12 | 10.51.51.12 |
+
 
 In this first stage, I will deploy Ceph Cluster.
 
