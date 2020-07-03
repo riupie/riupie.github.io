@@ -6,7 +6,7 @@ date:   2020-07-03
 desc: "Openstack Series"
 keywords: "linux,openstack,docker,ceph storage"
 categories: [cloud]
-tags: [ceph,openstack]
+tags: [ceph,openstack,cloud]
 icon: icon-shell
 ---
 In this article series, I will do a PoC how to deploy Openstack Cluster on top container based infrastructure. Openstack Cluster will be integrated with Ceph Cluster including images, instance and volume.
