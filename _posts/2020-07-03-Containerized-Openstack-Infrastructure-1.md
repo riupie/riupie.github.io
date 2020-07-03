@@ -23,12 +23,30 @@ I will use 3 servers (1 Controller Node+ 2 Compute Node) and 3 network subnets w
 
 ### IP Information
 
-| Hostname | Storage Interface | Openstack Interface |
-| -------------- | -------------- | -------------- | 
-| server0 | 10.50.50.10 | 10.51.51.10 |
-| server1 | 10.50.50.11 | 10.51.51.11 |
-| server2 | 10.50.50.12 | 10.51.51.12 |
-
+<table style="width: 260px; height: 92px;">
+<tbody>
+<tr style="height: 26px;">
+<td style="width: 66px; height: 26px; text-align: center;">Hostname</td>
+<td style="width: 74px; height: 26px; text-align: center;">Storage IP</td>
+<td style="width: 98px; height: 26px; text-align: center;">Openstack IP</td>
+</tr>
+<tr style="height: 13px;">
+<td style="width: 66px; height: 13px;">server0</td>
+<td style="width: 74px; height: 13px;">10.50.50.10</td>
+<td style="width: 98px; height: 13px;">10.51.51.10</td>
+</tr>
+<tr style="height: 13px;">
+<td style="width: 66px; height: 13px;">server1</td>
+<td style="width: 74px; height: 13px;">10.50.50.11</td>
+<td style="width: 98px; height: 13px;">10.51.51.11</td>
+</tr>
+<tr style="height: 13px;">
+<td style="width: 66px; height: 13px;">server2</td>
+<td style="width: 74px; height: 13px;">10.50.50.12</td>
+<td style="width: 98px; height: 13px;">10.51.51.12</td>
+</tr>
+</tbody>
+</table>
 
 
 In this first stage, I will deploy Ceph Cluster.
