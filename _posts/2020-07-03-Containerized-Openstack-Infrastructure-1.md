@@ -5,7 +5,7 @@ comments: true
 date:   2020-07-03
 desc: "Openstack Series"
 keywords: "linux,openstack,docker,ceph storage"
-categories: [Cloud Computing]
+categories: [cloud-computing]
 tags: [ceph,openstack]
 icon: icon-shell
 ---
