@@ -6,11 +6,13 @@
 - name: Cloud
   href: /cloud/
 
+- name: Devops
+  href: /devops/
+  
 - name: Linux
   href: /linux/
 
-- name: Python
-  href: /python/
+
 # Don't display donation page: change donation to off at file '_config.yml'
 #- name: Donate
 #  href: /donate/

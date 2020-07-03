@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Container based Openstack Deployment using Ceph Ansible and Kolla Ansible"
+title:  "Container based Openstack Deployment using Ceph Ansible and Kolla Ansible 1"
 comments: true
 date:   2020-07-03
 desc: "Openstack Series"
@@ -9,6 +9,7 @@ categories: [Cloud]
 tags: [ceph,openstack,cloud]
 icon: icon-shell
 ---
+
 In this article series, I will do a PoC how to deploy Openstack Cluster on top container based infrastructure. Openstack Cluster will be integrated with Ceph Cluster including images, instance and volume.
 There are two tools I use:
 1. Ceph Ansible to provision Ceph Cluster (Podman container)
@@ -20,6 +21,7 @@ I will use 3 servers (1 Controller Node+ 2 Compute Node) and 3 network subnets w
 3. Openstack Network: Network for openstack internal services communication.
 
 ![Design Topology](/static/assets/img/blog/openstack-kolla/2020-os_topology.png)
+
 
 ### IP Information
 
@@ -50,7 +52,9 @@ I will use 3 servers (1 Controller Node+ 2 Compute Node) and 3 network subnets w
 </br>
 
 
-In this first stage, I will deploy Ceph Cluster.
+# Deploy Ceph Cluster
+
+In this first stage, I will deploy Ceph Cluster using Ceph Ansible. Ceph Ansible has two different approach when deploy Ceph Cluster: 1) Systemd based and 2) Container based. In here, I will use container based deployment which is use Podman as container runtime.
 
 ### 1. Install required packages
 ```
@@ -162,6 +166,26 @@ yum install ceph-common -y
 ```
 ## 8. Verify Ceph Cluster
 ```
-ceph -s
+$ ceph -s
+
+  cluster:
+    id:     b9a5eeab-b69a-4779-a990-fd76d7856205
+    health: HEALTH_OK
+ 
+  services:
+    mon: 3 daemons, quorum server0,server1,server2 (age 27h)
+    mgr: server1(active, since 8d), standbys: server2, server0
+    mds: cephfs:1 {0=server0=up:active}
+    osd: 6 osds: 6 up (since 8d), 6 in (since 8d)
+ 
+  task status:
+    scrub status:
+        mds.server0: idle
+ 
+  data:
+    pools:   7 pools, 145 pgs
+    objects: 972 objects, 3.1 GiB
+    usage:   134 GiB used, 226 GiB / 360 GiB avail
+    pgs:     145 active+clean
 ```
 ---
