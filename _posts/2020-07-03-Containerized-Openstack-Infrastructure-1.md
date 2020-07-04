@@ -29,8 +29,8 @@ I will use 3 servers (1 Controller Node+ 2 Compute Node) and 3 network subnets w
 <tbody>
 <tr style="height: 26px;">
 <td style="width: 66px; height: 26px; text-align: center;"><strong>Hostname</strong></td>
-<td style="width: 74px; height: 26px; text-align: center;"><strong>Storage IP</strong></td>
-<td style="width: 98px; height: 26px; text-align: center;"><strong>Openstack IP</strong></td>
+<td style="width: 74px; height: 26px; text-align: center;"><strong>Storage Interface (enp1s0)</strong></td>
+<td style="width: 98px; height: 26px; text-align: center;"><strong>Openstack Interface (enp7s0)</strong></td>
 </tr>
 <tr style="height: 13px;">
 <td style="width: 66px; height: 13px; text-align: center;">server0</td>
