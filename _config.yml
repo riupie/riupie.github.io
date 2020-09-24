@@ -40,11 +40,11 @@ ga:  # if you wanna this feature, go to https://www.google.com/analytics/ to get
   id: UA-139164317-1
 
 ## google optimize
-go:
+#go:
   # id:
 
 ## growingIO
-gio:  # if you wanna this feature, go to https://www.growingio.com/ to get your configuration; if not, comment following line.
+#gio:  # if you wanna this feature, go to https://www.growingio.com/ to get your configuration; if not, comment following line.
   # id:
 
 ## donation
