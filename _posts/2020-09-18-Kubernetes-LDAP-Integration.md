@@ -229,7 +229,7 @@ ubuntu@ag-k8s-master0:~$ kubectl apply -f calico.yaml
 ```bash
 ubuntu@ag-k8s-master0:~$ sudo kubeadm token create --print-join-command
 
-ubuntu@ag-k8s-master0:~$ kubeadm join 10.54.54.10:6443 --token 2a80cg.tatnw7n3jaqsio5c     --discovery-token-ca-cert-hash sha256:70c6d0e5c2c9d3bfab4797dc9177b61136e5e690035042b8bdac58776f55818a
+kubeadm join 10.54.54.10:6443 --token 2a80cg.tatnw7n3jaqsio5c     --discovery-token-ca-cert-hash sha256:70c6d0e5c2c9d3bfab4797dc9177b61136e5e690035042b8bdac58776f55818a
 ```
 #### 3.9. Join nodes. Execute on each worker nodes
 ```bash
