@@ -762,4 +762,52 @@ spec:
 ```bash
 kubectl create -f gangway-system.yml
 ```
+#### 7.4. Verify dex and gangway pods
+```bash
+ubuntu@ag-k8s-master0:~$ kubectl get pods -n auth-system
+NAME                            READY   STATUS    RESTARTS   AGE
+dex-74fb858546-5jccf            1/1     Running   0          5d15h
+gangway-64b4788d5c-7tdcr        1/1     Running   0          5d15h
+```
+
+#### 7.5 Create RBAC for admins Group
+```bash
+vim rbac-admin.yml
+```
+```yaml
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: Group
+  name: admins
+```
+```bash
+kubectl create -f rbac-admins.yml
+```
+
+#### 7.6. Create RBAC for developers Group
+```bash
+vim rbac-dev.yml
+```
+```yaml
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: dev-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: view
+subjects:
+- kind: Group
+  name: developers
+```
 ---
