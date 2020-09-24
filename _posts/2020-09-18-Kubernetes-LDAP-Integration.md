@@ -762,5 +762,4 @@ spec:
 ```bash
 kubectl create -f gangway-system.yml
 ```
-
-
+---
