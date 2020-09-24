@@ -818,9 +818,9 @@ kubectl create -f rbac-dev.yml
 
 #### 7.7. Accesing Gangway
 Access to https://kubectl.kubernetes.riupie.com then login using johndoe user.
-![gangway-1](/static/assets/img/blog/k8s-ldap/gangway-1.png)
-![gangway-2](/static/assets/img/blog/k8s-ldap/gangway-2.png)
-![gangway-3](/static/assets/img/blog/k8s-ldap/gangway-3.png)
+![gangway-1](/static/assets/img/blog/k8s-ldap/gangway-1.png =250x100)
+![gangway-2](/static/assets/img/blog/k8s-ldap/gangway-2.png =250x100)
+![gangway-3](/static/assets/img/blog/k8s-ldap/gangway-3.png =250x100)
 
 
 ---
