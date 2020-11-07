@@ -2,30 +2,30 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on </title>
-    <link>https://riupie.github.io/categories/</link>
+    <link>https://riupie.github.com/categories/</link>
     <description>Recent content in Categories on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Fri, 06 Nov 2020 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://riupie.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://riupie.github.com/categories/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>devops</title>
-      <link>https://riupie.github.io/categories/devops/</link>
+      <link>https://riupie.github.com/categories/devops/</link>
       <pubDate>Fri, 06 Nov 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://riupie.github.io/categories/devops/</guid>
+      <guid>https://riupie.github.com/categories/devops/</guid>
       <description></description>
     </item>
     
     <item>
       <title>cloud</title>
-      <link>https://riupie.github.io/categories/cloud/</link>
+      <link>https://riupie.github.com/categories/cloud/</link>
       <pubDate>Sat, 17 Oct 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://riupie.github.io/categories/cloud/</guid>
+      <guid>https://riupie.github.com/categories/cloud/</guid>
       <description></description>
     </item>
     
