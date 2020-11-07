@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Series on </title>
-    <link>https://riupie.github.com/series/</link>
+    <link>https://www.rahmatawe.com/series/</link>
     <description>Recent content in Series on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 17 Oct 2020 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://riupie.github.com/series/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://www.rahmatawe.com/series/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>openshift 101</title>
-      <link>https://riupie.github.com/series/openshift-101/</link>
+      <link>https://www.rahmatawe.com/series/openshift-101/</link>
       <pubDate>Sat, 17 Oct 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://riupie.github.com/series/openshift-101/</guid>
+      <guid>https://www.rahmatawe.com/series/openshift-101/</guid>
       <description></description>
     </item>
     

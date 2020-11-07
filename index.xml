@@ -2,40 +2,40 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title></title>
-    <link>https://riupie.github.com/</link>
+    <link>https://www.rahmatawe.com/</link>
     <description>Recent content on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Fri, 06 Nov 2020 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://riupie.github.com/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://www.rahmatawe.com/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Implementing LDAP Authentication for Kubernetes using Dex on Ubuntu 18.04</title>
-      <link>https://riupie.github.com/blog/ldap-kubernetes-integration/</link>
+      <link>https://www.rahmatawe.com/blog/ldap-kubernetes-integration/</link>
       <pubDate>Fri, 06 Nov 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://riupie.github.com/blog/ldap-kubernetes-integration/</guid>
+      <guid>https://www.rahmatawe.com/blog/ldap-kubernetes-integration/</guid>
       <description>Environment # Servers ag-k8s-master0 : 10.54.54.10/24 (Kubernetes Master) ag-k8s-worker0 : 10.54.54.20/24 (Kubernetes Worker) ag-k8s-worker1 : 10.54.54.21/24 (Kubernetes Worker) ag-k8s-ldap : 10.54.54.30/24 (LDAP Server, DNS Server) # Packages Release Ubuntu 18.04 Kubernetes 1.19 OpenLDAP 2.4 Part 1: Pre-Flight 1. Setup DNS Server For simplicity, I used dnsmasq with minimal configuration. You can use your prefered DNS Server (ex: bind9).
 1.1. Install DNSMASQ root@ag-k8s-ldap:~# apt -y install dnsmasq 1.2. Configure Dnsmasq. Uncomment line below.</description>
     </item>
     
     <item>
       <title>Deploying HCI Openstack using Kolla Ansible</title>
-      <link>https://riupie.github.com/blog/deploying-openstack-hci/</link>
+      <link>https://www.rahmatawe.com/blog/deploying-openstack-hci/</link>
       <pubDate>Sat, 17 Oct 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://riupie.github.com/blog/deploying-openstack-hci/</guid>
+      <guid>https://www.rahmatawe.com/blog/deploying-openstack-hci/</guid>
       <description>IP Information   Hostname Storage Interface (enp1s0) Openstack Interface (enp7s0)   server0 10.50.50.10 10.51.51.10   server1 10.50.50.11 10.51.51.11   server2 10.50.50.12 10.51.51.12     A. Deploy Ceph Cluster In this first stage, I will deploy Ceph Cluster using Ceph Ansible. Ceph Ansible has two different approach when deploy Ceph Cluster: 1) Systemd based and 2) Container based. In here, I will use container based deployment which is use Podman as container runtime.</description>
     </item>
     
     <item>
       <title>Deploying UPI OKD 4.5 Cluster</title>
-      <link>https://riupie.github.com/blog/deploying-upi-okd/</link>
+      <link>https://www.rahmatawe.com/blog/deploying-upi-okd/</link>
       <pubDate>Sat, 17 Oct 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://riupie.github.com/blog/deploying-upi-okd/</guid>
+      <guid>https://www.rahmatawe.com/blog/deploying-upi-okd/</guid>
       <description>Environment   IP Address Hostname OS Description     10.10.51.9 okd-bastion CentOS 8 DNS Server, DHCP Server, NTP Server, PXE Server, LDAP Server   10.10.51.10 okd-bootstrap Fedora COreOS Bootstrap Server. Temporary only, could be delete after bootstrapping done.   10.10.51.11 okd-master01 Fedora CoreOS Master   10.10.51.12 okd-master02 Fedora CoreOS Master   10.10.51.13 okd-master03 Fedora CoreOS Master   10.10.51.21 okd-worker01 Fedora CoreOS Worker   10.</description>
     </item>
     
