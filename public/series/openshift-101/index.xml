@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>openshift 101 on </title>
+    <link>https://riupie.github.io/series/openshift-101/</link>
+    <description>Recent content in openshift 101 on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 17 Oct 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://riupie.github.io/series/openshift-101/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Deploying UPI OKD 4.5 Cluster</title>
+      <link>https://riupie.github.io/blog/deploying-upi-okd/</link>
+      <pubDate>Sat, 17 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://riupie.github.io/blog/deploying-upi-okd/</guid>
+      <description>Environment   IP Address Hostname OS Description     10.10.51.9 okd-bastion CentOS 8 DNS Server, DHCP Server, NTP Server, PXE Server, LDAP Server   10.10.51.10 okd-bootstrap Fedora COreOS Bootstrap Server. Temporary only, could be delete after bootstrapping done.   10.10.51.11 okd-master01 Fedora CoreOS Master   10.10.51.12 okd-master02 Fedora CoreOS Master   10.10.51.13 okd-master03 Fedora CoreOS Master   10.10.51.21 okd-worker01 Fedora CoreOS Worker   10.</description>
+    </item>
+    
+  </channel>
+</rss>

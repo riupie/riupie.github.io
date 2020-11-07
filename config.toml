@@ -1,5 +1,5 @@
-#baseURL = "https://www.rahmatawe.com/"
-baseURL = "https://riupie.github.io"
+baseURL = "https://www.rahmatawe.com/"
+#baseURL = "https://riupie.github.io"
 languageCode = "en-us"
 theme = "aafu"
 
