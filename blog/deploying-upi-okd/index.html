@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+  <title>RahmatAwe</title>
+
+<meta name="theme-color" content="" />
+<meta charset="utf-8" />
+<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+<meta name="description" content="Living, Working, Sleeping" />
+<meta name="author" content="Rahmat Agung Wibowo" />
+<meta name="generator" content="aafu theme by Darshan in Hugo 0.74.3" />
+
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">        <link rel="manifest" href="/site.webmanifest">        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#252627">        <link rel="shortcut icon" href="/favicon.ico">        
+
+  <link
+    rel="stylesheet"
+    href="/css/bootstrap/bootstrap.min.css"
+  />
+  <link
+    rel="stylesheet"
+    href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+    integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+    crossorigin="anonymous"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdn.rawgit.com/jpswalsh/academicons/master/css/academicons.min.css"
+  />
+  <link
+    rel="stylesheet"
+    href="//fonts.googleapis.com/css?family=Didact+Gothic%7CRoboto:400%7CRoboto+Mono"
+  />
+  <link rel="stylesheet" href="/css/aafu_light.css" />
+  <link rel="stylesheet" href="/css/aafu.css" />
+
+  <script>
+    var themeColor = document.querySelector("meta[name=theme-color]");
+    window.onload = () => {
+      themeColor.content = getComputedStyle(document.body)["background-color"];
+      let defaultActivePanel = document.querySelector(".accordion.active");
+      if (defaultActivePanel) {
+        defaultActivePanel.nextElementSibling.style.maxHeight =
+          defaultActivePanel.nextElementSibling.scrollHeight + "px";
+      }
+    };
+    window.onresize = () => {
+      let defaultActivePanel = document.querySelector(".accordion.active");
+      if (defaultActivePanel) {
+        defaultActivePanel.nextElementSibling.style.maxHeight =
+          defaultActivePanel.nextElementSibling.scrollHeight + "px";
+      }
+    };
+  </script>
+</head>
+<body class="container">
+    <main style="min-height: calc(100vh - 60px);">
+      
+      <div class="d-flex flex-row row p-2">
+  <h3 class="main-menu mr-3">
+    <a href="https://www.rahmatawe.com/">Home</a>
+  </h3>
+  <h3 class="main-menu mr-3">
+    <a href="/blog">Blog</a>
+  </h3>
+  <h3 class="main-menu mr-3">
+    <a href="/categories">Categories</a>
+  </h3>
+</div>
+
+      
+<div class="rounded p-2 aafu-border border">
+  <div class="border-bottom aafu-border">
+    <h1 class="top-h1" style="font-size: 2.75em;">Deploying UPI OKD 4.5 Cluster</h1><div class="mb-2">
+  <p class="mb-1">October 17, 2020</p>
+   
+  
+  <p class="metadata-value mb-1 taxa taxa-container-div list-categories">
+    Categories: 
+    <a
+      class="pl-1 pr-1 rounded border border-secondary"
+      href="/categories/cloud"
+      title="categories"
+    >cloud</a>
+    
+  </p>
+  
+  
+  
+  <p class="metadata-value mb-1 taxa taxa-container-div list-series">
+    Series: 
+    <a
+      class="pl-1 pr-1 rounded border border-secondary"
+      href="/series/openshift-101"
+      title="series"
+    >openshift 101</a>
+    
+  </p>
+  
+  
+  
+  <p class="metadata-value mb-1 taxa taxa-container-div list-tags">
+    Tags: 
+    <a
+      class="pl-1 pr-1 rounded border border-secondary"
+      href="/tags/openshift"
+      title="tags"
+    >openshift</a>
+    
+    <a
+      class="pl-1 pr-1 rounded border border-secondary"
+      href="/tags/okd"
+      title="tags"
+    >okd</a>
+    
+    <a
+      class="pl-1 pr-1 rounded border border-secondary"
+      href="/tags/linux"
+      title="tags"
+    >linux</a>
+    
+  </p>
+  
+  
+</div>
+</div>
+  <div class="content">
+    <h2 id="environment">Environment</h2>
+<p><img src="imgs/okdtopology.png" alt="Design Topology OKD"></p>
+<table class="table table-striped" >
+  <thead>
+    <tr>
+      <th scope="col">IP Address</th>
+      <th scope="col">Hostname</th>
+      <th scope="col">OS</th>
+      <th scope="col">Description</th>
+    </tr>
+  </thead>
+	<tbody>
+		<tr>
+			<td>10.10.51.9</td>
+			<td>okd-bastion</td>
+			<td>CentOS 8</td>
+			<td>DNS Server, DHCP Server, NTP Server, PXE Server, LDAP Server</td>
+		</tr>
+		<tr>
+			<td>10.10.51.10</td>
+			<td>okd-bootstrap</td>
+			<td>Fedora COreOS</td>
+			<td>Bootstrap Server. Temporary only, could be delete after bootstrapping done.</td>
+		</tr>
+		<tr>
+			<td>10.10.51.11</td>
+			<td>okd-master01</td>
+			<td>Fedora CoreOS</td>
+			<td>Master</td>
+		</tr>
+		<tr>
+			<td>10.10.51.12</td>
+			<td>okd-master02</td>
+			<td>Fedora CoreOS</td>
+			<td>Master</td>
+		</tr>
+		<tr>
+			<td>10.10.51.13</td>
+			<td>okd-master03</td>
+			<td>Fedora CoreOS</td>
+			<td>Master</td>
+		</tr>
+		<tr>
+			<td>10.10.51.21</td>
+			<td>okd-worker01</td>
+			<td>Fedora CoreOS</td>
+			<td>Worker</td>
+		</tr>
+		<tr>
+			<td>10.10.51.22</td>
+			<td>okd-worker02</td>
+			<td>Fedora CoreOS</td>
+			<td>Worker</td>
+		</tr>
+			<td>10.10.51.31</td>
+			<td>okd-lb1</td>
+			<td>CentOS 8</td>
+			<td>Load Balancer</td>
+		</tr>
+			<td>10.10.51.32</td>
+			<td>okd-lb2</td>
+			<td>CentOS 8</td>
+			<td>Load Balancer</td>
+		</tr>
+	</tbody>
+</table>
+<h2 id="part-1-bastionhelper-server">Part 1: Bastion/Helper Server</h2>
+<h3 id="1-setup-dns-server">1. Setup DNS Server</h3>
+<h4 id="11-install-bind-packages">1.1. Install Bind Packages</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">yum install -y vim bind bind-utils
+</code></pre></div><h4 id="12-define-zone-in-the-end-of-file">1.2. Define Zone in the end of file</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vim /etc/named.conf
+</code></pre></div><pre><code class="language-conf" data-lang="conf">
+options {
+	directory 	&quot;/var/named&quot;;
+	dump-file 	&quot;/var/named/data/cache_dump.db&quot;;
+	statistics-file &quot;/var/named/data/named_stats.txt&quot;;
+	memstatistics-file &quot;/var/named/data/named_mem_stats.txt&quot;;
+	secroots-file	&quot;/var/named/data/named.secroots&quot;;
+	recursing-file	&quot;/var/named/data/named.recursing&quot;;
+	allow-query     { localhost;10.10.51.0/24; };
+    listen-on port 53 { any; };
+
+	recursion yes;
+        forwarders {
+                8.8.8.8;
+                8.8.4.4;
+        };
+	dnssec-enable yes;
+	dnssec-validation yes;
+
+	managed-keys-directory &quot;/var/named/dynamic&quot;;
+
+	pid-file &quot;/run/named/named.pid&quot;;
+	session-keyfile &quot;/run/named/session.key&quot;;
+
+	/* https://fedoraproject.org/wiki/Changes/CryptoPolicy */
+	include &quot;/etc/crypto-policies/back-ends/bind.config&quot;;
+};
+
+logging {
+        channel default_debug {
+                file &quot;data/named.run&quot;;
+                severity dynamic;
+        };
+};
+
+zone &quot;.&quot; IN {
+	type hint;
+	file &quot;named.ca&quot;;
+};
+
+zone &quot;openshift.riupie.io&quot; {
+        type master;
+        file &quot;dynamic/forward.db&quot;;
+};
+
+zone &quot;51.10.10.in-addr.arpa&quot; {
+        type master;
+        file &quot;dynamic/reverse.db&quot;;
+};
+
+include &quot;/etc/named.rfc1912.zones&quot;;
+include &quot;/etc/named.root.key&quot;;
+</code></pre><h4 id="13-create-zone-files">1.3. Create zone files</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vim /var/named/dynamic/forward.db
+</code></pre></div><pre><code class="language-conf" data-lang="conf">$TTL 1W
+@	IN	SOA	ns1.openshift.riupie.io.	root (
+			2020092301	; serial
+			3H		    ; refresh (3 hours)
+			30M		    ; retry (30 minutes)
+			2W	    	; expiry (2 weeks)
+			1W )		; minimum (1 week)
+	IN	NS	ns1.openshift.riupie.io.
+	IN	MX 10	smtp.openshift.riupie.io.
+;
+; 
+ns1	  IN	A	10.10.51.9
+smtp	IN	A	10.10.51.9
+;
+bastion	IN	A	10.10.51.9
+;
+; The api points to the IP of your load balancer
+api		IN	A	10.10.51.100
+api-int		IN	A	10.10.51.100
+;
+; The wildcard also points to the load balancer
+*.apps		IN	A	10.10.51.100
+;
+; Create entry for the bootstrap host
+bootstrap	IN	A	10.10.51.10
+;
+; Create entries for the master hosts
+master01		IN	A	10.10.51.11
+master02		IN	A	10.10.51.12
+master03		IN	A	10.10.51.13
+;
+; Create entries for the worker hosts
+worker01		IN	A	10.10.51.21
+worker02		IN	A	10.10.51.22
+;
+; The ETCd cluster lives on the masters...so point these to the IP of the masters
+etcd-0	IN	A	10.10.51.11
+etcd-1	IN	A	10.10.51.12
+etcd-2	IN	A	10.10.51.13
+;
+; The SRV records are IMPORTANT....make sure you get these right...note the trailing dot at the end...
+_etcd-server-ssl._tcp	IN	SRV	0 10 2380 etcd-0.openshift.riupie.io.
+_etcd-server-ssl._tcp	IN	SRV	0 10 2380 etcd-1.openshift.riupie.io.
+_etcd-server-ssl._tcp	IN	SRV	0 10 2380 etcd-2.openshift.riupie.io.
+;
+</code></pre><h4 id="14-create-reverse-zone-file">1.4. Create Reverse Zone File</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vim /var/named/dynamic/reverse.db
+</code></pre></div><pre><code class="language-conf" data-lang="conf">$TTL 1W
+@	IN	SOA	ns1.openshift.riupie.io.	root (
+			2020092301	; serial
+			3H		    ; refresh (3 hours)
+			30M		    ; retry (30 minutes)
+			2W		    ; expiry (2 weeks)
+			1W )		; minimum (1 week)
+	IN	NS	ns1.openshift.riupie.io.
+;
+; syntax is &quot;last octet&quot; and the host must have fqdn with trailing dot
+
+9   IN  PTR bastion.openshift.riupie.io.
+
+11	IN	PTR	master01.openshift.riupie.io.
+12	IN	PTR	master02.openshift.riupie.io.
+13	IN	PTR	master03.openshift.riupie.io.
+;
+10	IN	PTR	bootstrap.openshift.riupie.io.
+;
+100	IN	PTR	api.openshift.riupie.io.
+100	IN	PTR	api-int.openshift.riupie.io.
+;
+21	IN	PTR	worker01.openshift.riupie.io.
+22	IN	PTR	worker02.openshift.riupie.io.
+;
+</code></pre><h4 id="15-enable-and-start-bind-service">1.5. Enable and start bind service</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">systemctl enable named
+systemctl restart named
+systemctl status named
+</code></pre></div><h4 id="16-allow-firewall">1.6. Allow firewall</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">firewall-cmd   --permanent --add-service<span style="color:#f92672">=</span>dns --zone<span style="color:#f92672">=</span>public  --permanent
+firewall-cmd --reload
+</code></pre></div><h4 id="17-change-dns-server-on-bastion">1.7. Change DNS Server on Bastion</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#Change DNS Server</span>
+nmtui
+
+<span style="color:#75715e">#Restart interface</span>
+ifdown ens3;ifup en3
+</code></pre></div><h4 id="18-verify-dns-server-works">1.8. Verify DNS Server works</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">nslookup api.openshift.riupie.io
+</code></pre></div><h3 id="2-setup-dhcp-server">2. Setup DHCP Server</h3>
+<h4 id="21-install-dhcp-server-package">2.1. Install dhcp-server package</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">yum install dhcp-server -y
+</code></pre></div><h4 id="22-configure-dhcp-leases">2.2. Configure DHCP Leases</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vim /etc/dhcp/dhcpd.conf
+</code></pre></div><pre><code class="language-conf" data-lang="conf">ddns-update-style interim;
+ignore client-updates;
+authoritative;
+allow booting;
+allow bootp;
+allow unknown-clients;
+
+# internal subnet for my DHCP Server
+subnet 10.10.51.0 netmask 255.255.255.0 {
+range 10.10.51.200 10.10.51.210;
+option domain-name-servers 10.10.51.9;
+option routers 10.10.51.1;
+option broadcast-address 10.10.51.255;
+default-lease-time 600;
+max-lease-time 7200;
+
+host bootstrap.openshift.riupie.io { hardware ethernet 52:54:00:19:24:45; fixed-address 10.10.51.10; }
+
+host master01.openshift.riupie.io { hardware ethernet 52:54:00:63:9b:49; fixed-address 10.10.51.11; }
+host master02.openshift.riupie.io { hardware ethernet 52:54:00:06:2c:9b; fixed-address 10.10.51.12; }
+host master03.openshift.riupie.io { hardware ethernet 52:54:00:93:87:91; fixed-address 10.10.51.13; }
+
+host worker01.openshift.riupie.io { hardware ethernet 52:54:00:10:d4:f3; fixed-address 10.10.51.21; }
+host worker02.openshift.riupie.io { hardware ethernet 52:54:00:18:59:d2; fixed-address 10.10.51.22; }
+
+deny unknown-clients;
+
+
+# IP of PXE Server
+next-server 10.10.51.9;
+if exists user-class and option user-class = &quot;iPXE&quot; {
+
+filename &quot;http://bastion.openshift.riupie.io:8080/boot.ipxe&quot;;
+
+} else {
+
+filename &quot;undionly.kpxe&quot;;
+
+}
+}
+</code></pre><h4 id="23-restart-and-enable-dhcp-service">2.3. Restart and enable dhcp service</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">systemctl enable dhcpd
+systemctl restart dhcpd
+systemctl status dhcpd
+</code></pre></div><h4 id="24-set-firewall">2.4. Set firewall</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo firewall-cmd --add-service<span style="color:#f92672">=</span>dhcp --permanent
+sudo firewall-cmd --reload
+</code></pre></div><h3 id="3-setup-pxe-boot-server">3. Setup PXE Boot Server</h3>
+<h4 id="31-install-tftp-server-package">3.1. Install tftp-server package</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">yum install tftp-server ipxe-bootimgs -y
+
+ln -s /usr/share/ipxe/undionly.kpxe /var/lib/tftpboot
+</code></pre></div><h4 id="32-download-and-extract-matchbox">3.2. Download and Extract Matchbox</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl -LO https://github.com/poseidon/matchbox/releases/download/v0.8.3/matchbox-v0.8.3-linux-amd64.tar.gz
+tar xvzf matchbox-v0.8.3-linux-amd64.tar.gz 
+</code></pre></div><h4 id="33-move-matchbox-binary">3.3. Move matchbox binary</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cd matchbox-v0.8.3-linux-amd64
+cp matchbox /usr/local/bin/
+</code></pre></div><h4 id="34-create-matchbox-user-for-matchbox-service">3.4. Create matchbox user for matchbox service</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">useradd -U matchbox
+</code></pre></div><h4 id="35-create-configuration-directory-for-matchbox">3.5. Create configuration directory for matchbox</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mkdir -p /var/lib/matchbox/<span style="color:#f92672">{</span>assets,groups,ignition,profiles<span style="color:#f92672">}</span>
+
+chown -R matchbox:matchbox /var/lib/matchbox
+</code></pre></div><h4 id="36-start-and-enable-tftp-service">3.6. Start and enable TFTP Service</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">systemctl enable tftp
+systemctl restart tftp
+</code></pre></div><h4 id="37-set-firewalld-for-tftp">3.7. Set firewalld for TFTP</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">firewall-cmd --permanent --add-service<span style="color:#f92672">=</span>tftp
+firewall-cmd --reload
+</code></pre></div><h4 id="38-create-enable-and-start-matchbox-systemd-service">3.8. Create, enable and start matchbox systemd service</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp contrib/systemd/matchbox-local.service /etc/systemd/system/matchbox.service
+
+systemctl daemon-reload
+systemctl enable matchbox
+systemctl restart matchbox
+</code></pre></div><h4 id="39-download-fedora-coreos-assets">3.9. Download Fedora CoreOS assets</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cd /var/lib/matchbox/assets
+
+wget https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/32.20200907.3.0/x86_64/fedora-coreos-32.20200907.3.0-live-kernel-x86_64 -O fcos-32-kernel
+wget https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/32.20200907.3.0/x86_64/fedora-coreos-32.20200907.3.0-live-kernel-x86_64.sig -O fcos-32-kernel.sig
+
+wget https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/32.20200907.3.0/x86_64/fedora-coreos-32.20200907.3.0-live-initramfs.x86_64.img -O fcos-32-initramfs.img
+wget https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/32.20200907.3.0/x86_64/fedora-coreos-32.20200907.3.0-live-initramfs.x86_64.img.sig -O fcos-32-initramfs.img.sig 
+
+wget https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/32.20200907.3.0/x86_64/fedora-coreos-32.20200907.3.0-metal.x86_64.raw.xz -O fcos-32-metal.raw.xz
+wget https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/32.20200907.3.0/x86_64/fedora-coreos-32.20200907.3.0-metal.x86_64.raw.xz.sig -O fcos-32-metal.raw.xz.sig
+
+</code></pre></div><h3 id="310-create-matchbox-profile-for-bootstrap-master-and-worker-nodes">3.10. Create matchbox profile for bootstrap, master and worker nodes</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vim /var/lib/matchbox/profiles/bootstrap.json
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+<span style="color:#f92672">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;bootstrap&#34;</span>,
+
+<span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;OKD 4.5 - Bootstrap&#34;</span>,
+
+<span style="color:#f92672">&#34;ignition_id&#34;</span>: <span style="color:#e6db74">&#34;bootstrap.ign&#34;</span>,
+
+<span style="color:#f92672">&#34;boot&#34;</span>: {
+
+<span style="color:#f92672">&#34;kernel&#34;</span>: <span style="color:#e6db74">&#34;/assets/fcos-32-kernel&#34;</span>,
+
+<span style="color:#f92672">&#34;initrd&#34;</span>: [<span style="color:#e6db74">&#34;/assets/fcos-32-initramfs.img&#34;</span>],
+
+<span style="color:#f92672">&#34;args&#34;</span>: [
+
+<span style="color:#e6db74">&#34;ip=dhcp&#34;</span>,
+
+<span style="color:#e6db74">&#34;rd.neednet=1&#34;</span>,
+
+<span style="color:#e6db74">&#34;console=tty0&#34;</span>,
+
+<span style="color:#e6db74">&#34;console=ttyS0&#34;</span>,
+
+<span style="color:#e6db74">&#34;coreos.inst=yes&#34;</span>,
+
+<span style="color:#e6db74">&#34;coreos.inst.install_dev=vda&#34;</span>,
+
+<span style="color:#e6db74">&#34;coreos.inst.image_url=http://helper.openshift.riupie.io:8080/assets/fcos-32-metal.raw.xz&#34;</span>,
+
+<span style="color:#e6db74">&#34;coreos.inst.ignition_url=http://helper.openshift.riupie.io:8080/ignition?mac=${mac:hexhyp}&#34;</span>
+]
+
+}
+}
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vim /var/lib/matchbox/profiles/master.json
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+<span style="color:#f92672">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;master&#34;</span>,
+
+<span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;OKD 4.5 - Master&#34;</span>,
+
+<span style="color:#f92672">&#34;ignition_id&#34;</span>: <span style="color:#e6db74">&#34;master.ign&#34;</span>,
+
+<span style="color:#f92672">&#34;boot&#34;</span>: {
+
+<span style="color:#f92672">&#34;kernel&#34;</span>: <span style="color:#e6db74">&#34;/assets/fcos-32-kernel&#34;</span>,
+
+<span style="color:#f92672">&#34;initrd&#34;</span>: [<span style="color:#e6db74">&#34;/assets/fcos-32-initramfs.img&#34;</span>],
+
+<span style="color:#f92672">&#34;args&#34;</span>: [
+
+<span style="color:#e6db74">&#34;ip=dhcp&#34;</span>,
+
+<span style="color:#e6db74">&#34;rd.neednet=1&#34;</span>,
+
+<span style="color:#e6db74">&#34;console=tty0&#34;</span>,
+
+<span style="color:#e6db74">&#34;console=ttyS0&#34;</span>,
+
+<span style="color:#e6db74">&#34;coreos.inst=yes&#34;</span>,
+
+<span style="color:#e6db74">&#34;coreos.inst.install_dev=vda&#34;</span>,
+
+<span style="color:#e6db74">&#34;coreos.inst.image_url=http://helper.openshift.riupie.io:8080/assets/fcos-32-metal.raw.xz&#34;</span>,
+
+<span style="color:#e6db74">&#34;coreos.inst.ignition_url=http://helper.openshift.riupie.io:8080/ignition?mac=${mac:hexhyp}&#34;</span>
+
+]
+
+}
+
+}
+
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vim /var/lib/matchbox/profiles/worker.json
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+<span style="color:#f92672">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;worker&#34;</span>,
+
+<span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;OKD 4.5 - Worker&#34;</span>,
+
+<span style="color:#f92672">&#34;ignition_id&#34;</span>: <span style="color:#e6db74">&#34;worker.ign&#34;</span>,
+
+<span style="color:#f92672">&#34;boot&#34;</span>: {
+
+<span style="color:#f92672">&#34;kernel&#34;</span>: <span style="color:#e6db74">&#34;/assets/fcos-32-kernel&#34;</span>,
+
+<span style="color:#f92672">&#34;initrd&#34;</span>: [
+
+<span style="color:#e6db74">&#34;/assets/fcos-32-initramfs.img&#34;</span>
+
+],
+
+<span style="color:#f92672">&#34;args&#34;</span>: [
+
+<span style="color:#e6db74">&#34;ip=dhcp&#34;</span>,
+
+<span style="color:#e6db74">&#34;rd.neednet=1&#34;</span>,
+
+<span style="color:#e6db74">&#34;console=tty0&#34;</span>,
+
+<span style="color:#e6db74">&#34;console=ttyS0&#34;</span>,
+
+<span style="color:#e6db74">&#34;coreos.inst=yes&#34;</span>,
+
+<span style="color:#e6db74">&#34;coreos.inst.install_dev=vda&#34;</span>,
+
+<span style="color:#e6db74">&#34;coreos.inst.image_url=http://helper.openshift.riupie.io:8080/assets/fcos-32-metal.raw.xz&#34;</span>,
+
+<span style="color:#e6db74">&#34;coreos.inst.ignition_url=http://helper.openshift.riupie.io:8080/ignition?mac=${mac:hexhyp}&#34;</span>
+
+]
+
+}
+
+}
+</code></pre></div><h4 id="311-create-groups-for-each-nodes-changes-mac-address">3.11. Create groups for each nodes (changes MAC ADDRESS)</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vim /var/lib/matchbox/groups/bootstrap.json
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+<span style="color:#f92672">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;bootstrap01&#34;</span>,
+
+<span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;OCP 4.5 - Bootstrap server&#34;</span>,
+
+<span style="color:#f92672">&#34;profile&#34;</span>: <span style="color:#e6db74">&#34;bootstrap&#34;</span>,
+
+<span style="color:#f92672">&#34;selector&#34;</span>: {
+
+<span style="color:#f92672">&#34;mac&#34;</span>: <span style="color:#e6db74">&#34;52:54:00:7a:55:a1&#34;</span>
+
+}
+
+}
+
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vim /var/lib/matchbox/groups/master01.json 
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+<span style="color:#f92672">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;master01&#34;</span>,
+
+<span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;OCP 4.5 - Master 1&#34;</span>,
+
+<span style="color:#f92672">&#34;profile&#34;</span>: <span style="color:#e6db74">&#34;master&#34;</span>,
+
+<span style="color:#f92672">&#34;selector&#34;</span>: {
+
+<span style="color:#f92672">&#34;mac&#34;</span>: <span style="color:#e6db74">&#34;52:54:00:58:b0:a9&#34;</span>
+
+}
+
+}
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vim /var/lib/matchbox/groups/master02.json 
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+<span style="color:#f92672">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;master02&#34;</span>,
+
+<span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;OCP 4.5 - Master 2&#34;</span>,
+
+<span style="color:#f92672">&#34;profile&#34;</span>: <span style="color:#e6db74">&#34;master&#34;</span>,
+
+<span style="color:#f92672">&#34;selector&#34;</span>: {
+
+<span style="color:#f92672">&#34;mac&#34;</span>: <span style="color:#e6db74">&#34;52:54:00:79:70:08&#34;</span>
+
+}
+
+}
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vim /var/lib/matchbox/groups/master03.json 
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+<span style="color:#f92672">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;master03&#34;</span>,
+
+<span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;OCP 4.5 - Master 3&#34;</span>,
+
+<span style="color:#f92672">&#34;profile&#34;</span>: <span style="color:#e6db74">&#34;master&#34;</span>,
+
+<span style="color:#f92672">&#34;selector&#34;</span>: {
+
+<span style="color:#f92672">&#34;mac&#34;</span>: <span style="color:#e6db74">&#34;52:54:00:de:92:a2&#34;</span>
+
+}
+
+}
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vim /var/lib/matchbox/groups/worker01.json 
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+<span style="color:#f92672">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;worker01&#34;</span>,
+
+<span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;OCP 4.5 - Worker 1&#34;</span>,
+
+<span style="color:#f92672">&#34;profile&#34;</span>: <span style="color:#e6db74">&#34;worker&#34;</span>,
+
+<span style="color:#f92672">&#34;selector&#34;</span>: {
+
+<span style="color:#f92672">&#34;mac&#34;</span>: <span style="color:#e6db74">&#34;52:54:00:6f:4b:1f&#34;</span>
+
+}
+
+}
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vim /var/lib/matchbox/groups/worker02.json 
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+<span style="color:#f92672">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;worker02&#34;</span>,
+
+<span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;OCP 4.5 - Worker 2&#34;</span>,
+
+<span style="color:#f92672">&#34;profile&#34;</span>: <span style="color:#e6db74">&#34;worker&#34;</span>,
+
+<span style="color:#f92672">&#34;selector&#34;</span>: {
+
+<span style="color:#f92672">&#34;mac&#34;</span>: <span style="color:#e6db74">&#34;52:54:00:c7:f4:21&#34;</span>
+
+}
+
+}
+
+</code></pre></div><h4 id="312-set-permission-for-group-and-profile-file">3.12. Set permission for group and profile file</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">chown -R matchbox:matchbox /var/lib/matchbox
+</code></pre></div><h4 id="313-set-firewalld-for-matchbox">3.13. Set firewalld for matchbox</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">firewall-cmd --permanent --add-port 8080/tcp
+firewall-cmd --reload
+</code></pre></div><h4 id="314-restart-matchbox">3.14. Restart matchbox</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">systemctl restart matchbox
+</code></pre></div><h3 id="4-setup-ntp-server">4. Setup NTP Server</h3>
+<h4 id="41-install-chrony-package">4.1. Install chrony package</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">yum install -y chrony
+</code></pre></div><h4 id="42-configure-chrony">4.2. Configure chrony</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vim /etc/chrony.conf
+</code></pre></div><pre><code class="language-conf" data-lang="conf">#comment below line
+#pool 2.centos.pool.ntp.org iburst
+
+#add below lines
+server 0.id.pool.ntp.org
+server 1.id.pool.ntp.org
+server 2.id.pool.ntp.org
+server 3.id.pool.ntp.org
+
+#Modify below line
+# Allow NTP client access from local network.
+allow 10.10.51.0/24
+</code></pre><h4 id="43-enable-and-restart-service">4.3. Enable and restart service</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">systemctl enable chronyd
+systemctl restart chronyd
+systemctl status chronyd
+</code></pre></div><h4 id="44-verify-ntp-server">4.4. Verify NTP Server</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">chronyc sources
+</code></pre></div><h4 id="45-set-timezone-to-asiajakarta">4.5. Set timezone to Asia/Jakarta</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">timedatectl set-timezone Asia/Jakarta
+</code></pre></div><h4 id="46-allow-remote-access-to-ntp-server">4.6. Allow remote access to NTP Server</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">firewall-cmd --permanent --add-service<span style="color:#f92672">=</span>ntp
+firewall-cmd --reload
+</code></pre></div><h2 id="part-2-load-balancer-server">Part 2: Load Balancer Server</h2>
+<h3 id="1-setup-dns-and-ntp">1. Setup DNS and NTP</h3>
+<h4 id="11-configure-dns-server">1.1. Configure DNS Server</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#Change DNS Server</span>
+nmtui
+
+<span style="color:#75715e">#Restart interface</span>
+ifdown ens3;ifup en3
+</code></pre></div><h4 id="12-configure-ntp-server">1.2. Configure NTP Server</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># Install chrony</span>
+yum install chrony -y
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># Set NTP Server</span>
+vim /etc/chrony.conf
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#Add this line</span>
+server 10.10.50.9 iburst
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># Restart chrony</span>
+systemctl restart chronyd
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>root@okd-lb1 ~<span style="color:#f92672">]</span><span style="color:#75715e"># timedatectl</span>
+               Local time: Mon 2020-10-26 19:28:16 WIB
+           Universal time: Mon 2020-10-26 12:28:16 UTC
+                 RTC time: Mon 2020-10-26 12:28:16
+                Time zone: Asia/Jakarta <span style="color:#f92672">(</span>WIB, +0700<span style="color:#f92672">)</span>
+System clock synchronized: yes
+              NTP service: active
+          RTC in local TZ: no
+</code></pre></div><h3 id="2-setup-vip-address-using-keepalived">2. Setup VIP Address using Keepalived</h3>
+<h4 id="21-install-keepalived-packages">2.1. Install keepalived packages</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">yum update -y
+yum install -y keepalived
+</code></pre></div><h4 id="22-configure-keepalived">2.2. Configure keepalived</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mv /etc/keepalived/keepalived.conf /etc/keepalived/keepalived.conf.bk
+vim /etc/keepalived/keepalived.conf
+</code></pre></div><pre><code># ON MASTER LB
+vrrp_script haproxy_check {
+        script &quot;killall -0 haproxy&quot; #check haproxy process
+        interval 2                                      # every 2 seconds       
+        weight 2                                        # add 2 points if OK
+}
+
+vrrp_instance OCP_EXT {
+        interface enp1s0                        # set interface
+        virtual_router_id 51
+        priority 100                            # set to lower value (ex: 98)for BACKUP LB
+        state MASTER                            # set to BACKUP for second LB
+        virtual_ipaddress {
+                10.10.51.100 dev enp1s0         # set interface and VIP
+
+}
+        track_script {
+                haproxy_check
+        }
+}
+</code></pre><pre><code># ON BACKUP LB
+vrrp_script haproxy_check {
+	script &quot;killall -0 haproxy&quot; #check haproxy process
+	interval 2 					# every 2 seconds
+	weight 2					# add 2 points if OK
+}
+
+vrrp_instance OCP_EXT {
+	interface ens3       # set interface
+	virtual_router_id 51
+	priority 98				# set to lower value (ex: 98)for BACKUP LB
+	state BACKUP				# set to BACKUP for second LB
+	virtual_ipaddress {
+		10.10.51.100 dev ens3    # set interface
+
+}
+	track_script {
+		haproxy_check
+	}
+}
+</code></pre><h4 id="23-enable-and-start-service">2.3. Enable and start service</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">systemctl enable keepalived
+systemctl start keepalived
+systemctl status keepalived
+</code></pre></div><h3 id="3-setup-haproxy">3. Setup Haproxy</h3>
+<h4 id="31-install-haproxy-packages">3.1. Install haproxy packages</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">yum install -y haproxy rsyslog
+</code></pre></div><h4 id="32-configure-haproxy">3.2. Configure haproxy</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vim /etc/haproxy/haproxy.cfg
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cfg" data-lang="cfg"><span style="color:#75715e">#---------------------------------------------------------------------</span>
+<span style="color:#75715e"># Global settings</span>
+<span style="color:#75715e">#---------------------------------------------------------------------</span>
+<span style="color:#a6e22e">global</span>
+    <span style="color:#a6e22e">log         127.0.0.1 local2</span>
+
+    <span style="color:#a6e22e">chroot      /var/lib/haproxy</span>
+    <span style="color:#a6e22e">pidfile     /var/run/haproxy.pid</span>
+    <span style="color:#a6e22e">maxconn     4000</span>
+    <span style="color:#a6e22e">user        haproxy</span>
+    <span style="color:#a6e22e">group       haproxy</span>
+    <span style="color:#a6e22e">daemon</span>
+
+    <span style="color:#75715e"># turn on stats unix socket</span>
+    <span style="color:#a6e22e">stats socket /var/lib/haproxy/stats</span>
+
+    <span style="color:#75715e"># utilize system-wide crypto-policies</span>
+    <span style="color:#a6e22e">ssl-default-bind-ciphers PROFILE</span><span style="color:#f92672">=</span><span style="color:#e6db74">SYSTEM
+</span><span style="color:#e6db74">    ssl-default-server-ciphers PROFILE=SYSTEM</span>
+
+<span style="color:#75715e">#---------------------------------------------------------------------</span>
+<span style="color:#75715e"># common defaults that all the &#39;listen&#39; and &#39;backend&#39; sections will</span>
+<span style="color:#75715e"># use if not designated in their block</span>
+<span style="color:#75715e">#---------------------------------------------------------------------</span>
+<span style="color:#a6e22e">defaults</span>
+    <span style="color:#a6e22e">mode                    http</span>
+    <span style="color:#a6e22e">log                     global</span>
+    <span style="color:#a6e22e">option                  httplog</span>
+    <span style="color:#a6e22e">option                  dontlognull</span>
+    <span style="color:#a6e22e">option http-server-close</span>
+    <span style="color:#a6e22e">option forwardfor       except 127.0.0.0/8</span>
+    <span style="color:#a6e22e">option                  redispatch</span>
+    <span style="color:#a6e22e">retries                 3</span>
+    <span style="color:#a6e22e">timeout http-request    10s</span>
+    <span style="color:#a6e22e">timeout queue           1m</span>
+    <span style="color:#a6e22e">timeout connect         10s</span>
+    <span style="color:#a6e22e">timeout client          1m</span>
+    <span style="color:#a6e22e">timeout server          1m</span>
+    <span style="color:#a6e22e">timeout http-keep-alive 10s</span>
+    <span style="color:#a6e22e">timeout check           10s</span>
+    <span style="color:#a6e22e">maxconn                 3000</span>
+
+<span style="color:#75715e">#---------------------------------------------------------------------</span>
+<span style="color:#75715e"># main frontend which proxys to the backends</span>
+<span style="color:#75715e">#---------------------------------------------------------------------</span>
+<span style="color:#a6e22e">frontend openshift-api-server</span>
+    <span style="color:#a6e22e">bind api.openshift.riupie.io:6443</span>
+    <span style="color:#a6e22e">default_backend openshift-api-server</span>
+    <span style="color:#a6e22e">mode tcp</span>
+    <span style="color:#a6e22e">option tcplog</span>
+<span style="color:#a6e22e">frontend machine-config-server</span>
+    <span style="color:#a6e22e">bind api-int.openshift.riupie.io:22623</span>
+    <span style="color:#a6e22e">default_backend machine-config-server</span>
+    <span style="color:#a6e22e">mode tcp</span>
+    <span style="color:#a6e22e">option tcplog</span>
+<span style="color:#a6e22e">frontend ingress-http</span>
+    <span style="color:#a6e22e">bind *:80</span>
+    <span style="color:#a6e22e">default_backend ingress-http</span>
+    <span style="color:#a6e22e">mode tcp</span>
+    <span style="color:#a6e22e">option tcplog</span>
+<span style="color:#a6e22e">frontend ingress-https</span>
+    <span style="color:#a6e22e">bind *:443</span>
+    <span style="color:#a6e22e">default_backend ingress-https</span>
+    <span style="color:#a6e22e">mode tcp</span>
+    <span style="color:#a6e22e">option tcplog</span>
+
+<span style="color:#75715e">#---------------------------------------------------------------------</span>
+<span style="color:#75715e"># static backend for serving up API, MSC, HTTP and HTTPS</span>
+<span style="color:#75715e">#---------------------------------------------------------------------</span>
+<span style="color:#a6e22e">backend openshift-api-server</span>
+    <span style="color:#a6e22e">balance source</span>
+    <span style="color:#a6e22e">mode tcp</span>
+    <span style="color:#a6e22e">server bootstrap.openshift.riupie.io 10.10.51.10:6443 check</span>
+    <span style="color:#a6e22e">server master01.openshift.riupie.io 10.10.51.11:6443 check</span>
+    <span style="color:#a6e22e">server master02.openshift.riupie.io 10.10.51.12:6443 check</span>
+    <span style="color:#a6e22e">server master03.openshift.riupie.io 10.10.51.13:6443 check</span>
+<span style="color:#a6e22e">backend machine-config-server</span>
+    <span style="color:#a6e22e">balance source</span>
+    <span style="color:#a6e22e">mode tcp</span>
+    <span style="color:#a6e22e">server bootstrap.openshift.riupie.io 10.10.51.10:22623 check</span>
+    <span style="color:#a6e22e">server master01.openshift.riupie.io 10.10.51.11:22623 check</span>
+    <span style="color:#a6e22e">server master02.openshift.riupie.io 10.10.51.12:22623 check</span>
+    <span style="color:#a6e22e">server master03.openshift.riupie.io 10.10.51.13:22623 check</span>
+<span style="color:#a6e22e">backend ingress-http</span>
+    <span style="color:#a6e22e">balance source</span>
+    <span style="color:#a6e22e">mode tcp</span>
+    <span style="color:#a6e22e">server worker01.openshift.riupie.io 10.10.51.21:80 check</span>
+    <span style="color:#a6e22e">server worker02.openshift.riupie.io 10.10.51.22:80 check</span>
+<span style="color:#a6e22e">backend ingress-https</span>
+    <span style="color:#a6e22e">balance source</span>
+    <span style="color:#a6e22e">mode tcp</span>
+    <span style="color:#a6e22e">server worker01.openshift.riupie.io 10.10.51.21:443 check</span>
+    <span style="color:#a6e22e">server worker02.openshift.riupie.io 10.10.51.22:443 check</span>
+</code></pre></div><h4 id="33-enable-haproxy-log-comment-out-below-line">3.3. Enable haproxy log. Comment out below line</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vim /etc/rsyslog.conf
+</code></pre></div><pre><code>module(load=&quot;imudp&quot;) # needs to be done just once
+input(type=&quot;imudp&quot; port=&quot;514&quot;)
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vim /etc/rsyslog.d/haproxy.conf
+</code></pre></div><pre><code>#Add this line
+local2.*    /var/log/haproxy.log
+</code></pre><h4 id="34-setsebool-to-allow-haproxy-socket-to-open-on-any-port">3.4. Setsebool to allow haproxy socket to open on any port</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">setsebool -P haproxy_connect_any<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</code></pre></div><h4 id="35-allow-haproxy-to-connect-to-unbind-ip-address">3.5. Allow haproxy to connect to unbind IP Address</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sysctl -w net.ipv4.ip_nonlocal_bind<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</code></pre></div><h4 id="36-enable-and-restart-haproxy">3.6. Enable and restart haproxy</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">systemctl enable haproxy
+systemctl restart haproxy
+systemctl status haproxy
+</code></pre></div><h4 id="37-enable-and-restart-rsyslog">3.7. Enable and restart rsyslog</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">systemctl enable rsyslog
+systemctl restart rsyslog
+systemctl status rsyslog
+</code></pre></div><h4 id="38-set-firewalld-for-haproxy">3.8. Set firewalld for haproxy</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">firewall-cmd --permanent --add-service http
+firewall-cmd --permanent --add-service https
+firewall-cmd --permanent --add-port 6443/tcp
+firewall-cmd --permanent --add-port 22623/tcp
+firewall-cmd --reload
+</code></pre></div><h3 id="4-setup-nfs-server-on-bastion-server">4. Setup NFS Server on Bastion Server</h3>
+<h4 id="41-install-packages">4.1. Install packages</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">yum install -y nfs-utils
+</code></pre></div><h4 id="42-enable-nfs-service">4.2. Enable nfs service</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">systemctl start nfs-server.service
+systemctl enable nfs-server.service
+systemctl status nfs-server.service
+</code></pre></div><h4 id="43-create-nfs-directory">4.3. Create NFS directory</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mkdir -p  /mnt/nfs_shares/okd
+chmod -R <span style="color:#ae81ff">777</span> /mnt/nfs_shares/okd/
+</code></pre></div><h4 id="44-export-filesystem-share">4.4. Export filesystem share</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vim /etc/exports
+</code></pre></div><pre><code>/mnt/nfs_shares/okd		*(rw,root_squash)    
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">exportfs -arv
+</code></pre></div><h4 id="45-verify-export-list">4.5. Verify export list</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">exportfs  -s
+</code></pre></div><h4 id="46-set-firewalld-for-nfs-server">4.6. Set firewalld for NFS Server</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">firewall-cmd --permanent --add-service<span style="color:#f92672">=</span>nfs
+firewall-cmd --permanent --add-service<span style="color:#f92672">=</span>nfs3
+firewall-cmd --permanent --add-service<span style="color:#f92672">=</span>rpc-bind
+firewall-cmd --permanent --add-service<span style="color:#f92672">=</span>mountd
+firewall-cmd --reload
+</code></pre></div><h4 id="47-get-disk-devvdb-uuid">4.7. Get disk /dev/vdb UUID</h4>
+<pre><code>blkid
+</code></pre><h4 id="48-format-disk-devvdb-to-xfs">4.8. Format disk /dev/vdb to XFS</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mkfs.xfs /dev/vdb
+</code></pre></div><h4 id="49-mount-devvdb-to-mntnfs_sharesokd">4.9. Mount /dev/vdb to /mnt/nfs_shares/okd/</h4>
+<pre><code>vi /etc/fstab
+</code></pre><pre><code>...
+UUID=025fbf3a-89df-4903-a75c-6c92f3210958 /mnt/nfs_shares/okd/        xfs     defaults        0 0
+...
+</code></pre><pre><code>mount -a
+</code></pre><h4 id="410-verify-mountpoint">4.10. Verify mountpoint</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">df -hT
+</code></pre></div><h2 id="part-3-deploy-okd-45-cluster-from-bastion-server">Part 3: Deploy OKD 4.5 Cluster from Bastion Server</h2>
+<h3 id="1-initial-setup">1. Initial Setup</h3>
+<h4 id="11-generate-ssh-keypair">1.1. Generate SSH Keypair</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#Generate SSH keypair</span>
+ssh-keygen
+
+<span style="color:#75715e">#Optional: Save ssh private key using ssh-agent if you use passphrase.</span>
+eval <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>ssh-agent -s<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+ssh-add /root/.ssh/id_rsa
+</code></pre></div><h4 id="12-obtaining-the-installation-program">1.2. Obtaining the installation program</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#Download openshift client</span>
+wget https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz
+
+<span style="color:#75715e">#Extract package</span>
+tar xvzf /root/oc.tar.gz
+
+<span style="color:#75715e">#Move oc binary to /usr/bin/</span>
+mv /root/oc /usr/bin/
+
+<span style="color:#75715e">#Download openshift-installer</span>
+wget https://github.com/openshift/okd/releases/download/4.5.0-0.okd-2020-09-18-202631/openshift-install-linux-4.5.0-0.okd-2020-09-18-202631.tar.gz
+
+<span style="color:#75715e">#Extract openshift-installer package</span>
+tar xvzf /root/openshift-install-linux-4.5.0-0.okd-2020-09-18-202631.tar.gz
+
+<span style="color:#75715e">#Create a directory to save openshift configuration</span>
+mkdir /root/okd-config
+mv /root/openshift-install /root/okd-config/
+cd /root/okd-config
+</code></pre></div><h4 id="13-get-pullsecret">1.3. Get pullSecret</h4>
+<p>You can get pull secret from <a href="https://cloud.redhat.com/openshift/install/pull-secret">https://cloud.redhat.com/openshift/install/pull-secret</a> or use fake pull secret. If you use Openshift pull secret, you will get 60 days trial of Openshift and access to Openshift Registry Marketplace from OperatorHub. If you use fake pull secret, you can only access Community OperatorHub.</p>
+<h4 id="14-create-installation-configuration-file">1.4. Create installation configuration file</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vim /root/okd-config/install-config.yaml
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: v1
+<span style="color:#66d9ef">baseDomain</span>: riupie.io
+<span style="color:#66d9ef">compute</span>:
+- <span style="color:#66d9ef">hyperthreading</span>: Enabled
+  <span style="color:#66d9ef">name</span>: worker
+  <span style="color:#66d9ef">replicas</span>: <span style="color:#ae81ff">0</span>
+<span style="color:#66d9ef">controlPlane</span>:
+  <span style="color:#66d9ef">hyperthreading</span>: Enabled
+  <span style="color:#66d9ef">name</span>: master 
+  <span style="color:#66d9ef">replicas</span>: <span style="color:#ae81ff">3</span>
+<span style="color:#66d9ef">metadata</span>:
+  <span style="color:#66d9ef">name</span>: openshift 
+<span style="color:#66d9ef">networking</span>:
+  <span style="color:#66d9ef">clusterNetwork</span>:
+  - <span style="color:#66d9ef">cidr</span>: <span style="color:#ae81ff">10.128.0.0</span>/<span style="color:#ae81ff">14</span> 
+    <span style="color:#66d9ef">hostPrefix</span>: <span style="color:#ae81ff">23</span> 
+  <span style="color:#66d9ef">networkType</span>: OpenShiftSDN
+  <span style="color:#66d9ef">serviceNetwork</span>: 
+  - <span style="color:#ae81ff">172.30.0.0</span>/<span style="color:#ae81ff">16</span>
+<span style="color:#66d9ef">platform</span>:
+  <span style="color:#66d9ef">none</span>: {} 
+<span style="color:#66d9ef">pullSecret</span>: <span style="color:#e6db74">&#39;{&#34;auths&#34;:{&#34;fake&#34;:{&#34;auth&#34;: &#34;bar&#34;}}}&#39;</span> 
+<span style="color:#66d9ef">sshKey</span>: <span style="color:#e6db74">&#39;your_bastion_server_ssh_pub_key&#39;</span>
+</code></pre></div><h4 id="15-backup-installation-configuration-file">1.5. Backup installation configuration file</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp /root/okd-config/install-config.yaml /root/okd-config/install-config.yaml.bk
+</code></pre></div><h4 id="16-generate-manifests-files">1.6. Generate manifests files</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cd /root/okd-config/
+./openshift-install create manifests --dir<span style="color:#f92672">=</span>/root/okd-config/
+</code></pre></div><h4 id="17-prevent-pods-from-being-scheduled-on-the-control-plane-machines-set-mastersschedulable-to-false">1.7. Prevent Pods from being scheduled on the control plane machines. Set <code>mastersSchedulable</code> to false.</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vim /root/okd-config/manifests/cluster-scheduler-02-config.yml
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: config.openshift.io/v1
+<span style="color:#66d9ef">kind</span>: Scheduler
+<span style="color:#66d9ef">metadata</span>:
+  <span style="color:#66d9ef">creationTimestamp</span>: <span style="color:#66d9ef">null</span>
+  <span style="color:#66d9ef">name</span>: cluster
+<span style="color:#66d9ef">spec</span>:
+  <span style="color:#66d9ef">mastersSchedulable</span>: <span style="color:#66d9ef">false</span>
+  <span style="color:#66d9ef">policy</span>:
+    <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;&#34;</span>
+<span style="color:#66d9ef">status</span>: {}
+</code></pre></div><h4 id="18-generate-ignition-files">1.8. Generate Ignition Files</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">./openshift-install create ignition-configs --dir<span style="color:#f92672">=</span>/root/okd-config/
+</code></pre></div><h4 id="19-directory-tree">1.9. Directory tree</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">/root/okd-config/
+├── auth
+│   ├── kubeadmin-password
+│   └── kubeconfig
+├── bootstrap.ign
+├── master.ign
+├── openshift-install
+└── worker.ign
+</code></pre></div><h4 id="110-copy-ignition-files-to-matchbox-directory">1.10. Copy ignition files to matchbox directory</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp /root/okd-config/*.ign /var/lib/matchbox/ignition/
+</code></pre></div><h4 id="111-set-ownership-of-directory-varlibmatchbox">1.11. Set ownership of directory /var/lib/matchbox</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">chown -R matchbox:matchbox /var/lib/matchbox
+</code></pre></div><h4 id="112-restart-matchbox">1.12. Restart matchbox</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">systemctl restart matchbox
+</code></pre></div><h4 id="112-power-on-bootstrapmaster-and-worker-nodes">1.12. Power On bootstrap,master and worker nodes.</h4>
+<h4 id="113-check-bootstrapping-progress">1.13. Check bootstrapping progress</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>root@okd02-bastion okd-config<span style="color:#f92672">]</span><span style="color:#75715e"># ./openshift-install --dir=/root/okd-config/ wait-for bootstrap-complete --log-level=info</span>
+INFO Waiting up to 20m0s <span style="color:#66d9ef">for</span> the Kubernetes API at https://api.openshift.riupie.io:6443... 
+INFO API v1.18.3 up                               
+INFO Waiting up to 40m0s <span style="color:#66d9ef">for</span> bootstrapping to complete... 
+INFO It is now safe to remove the bootstrap resources 
+INFO Time elapsed: 0s
+</code></pre></div><h4 id="114-remove-bootstrap-server-from-loadbalancer">1.14. Remove bootstrap server from loadbalancer</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vim /etc/haproxy/haproxy.cfg
+</code></pre></div><h4 id="115-after-bootstrapping-complete-check-installation-progress">1.15. After bootstrapping complete, check installation progress.</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">./openshift-install --dir<span style="color:#f92672">=</span>/root/okd-config/ wait-for install-complete --log-level<span style="color:#f92672">=</span>debug
+
+
+DEBUG Still waiting <span style="color:#66d9ef">for</span> the cluster to initialize: Working towards 4.5.0-0.okd-2020-09-18-202631: 87% complete, waiting on authentication, monitoring
+DEBUG Cluster is initialized
+INFO Waiting up to 10m0s <span style="color:#66d9ef">for</span> the openshift-console route to be created...
+DEBUG Route found in openshift-console namespace: console
+DEBUG Route found in openshift-console namespace: downloads
+DEBUG OpenShift console route is created
+INFO Install complete!
+INFO To access the cluster as the system:admin user when using <span style="color:#e6db74">&#39;oc&#39;</span>, run <span style="color:#e6db74">&#39;export KUBECONFIG=/root/okd-config/auth/kubeconfig&#39;</span>
+INFO Access the OpenShift web-console here: https://console-openshift-console.apps.openshift.riupie.io
+INFO Login to the console with user: <span style="color:#e6db74">&#34;kubeadmin&#34;</span>, and password: <span style="color:#e6db74">&#34;KjV4r-eg3Uq-qEtU5-AxPS6&#34;</span>
+DEBUG Time elapsed per stage:
+DEBUG Cluster Operators: 9m8s
+INFO Time elapsed: 9m8s
+</code></pre></div><h4 id="116-logging-in-to-the-cluster">1.16. Logging in to the cluster</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">export KUBECONFIG<span style="color:#f92672">=</span>/root/okd-config/auth/kubeconfig
+
+<span style="color:#75715e">#Check user</span>
+oc whoami
+</code></pre></div><h4 id="117-verify-cluster-nodes">1.17. Verify cluster nodes</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">oc get nodes
+</code></pre></div><h4 id="118-approving-csr">1.18. Approving CSR</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">oc get csr
+oc get csr -o go-template<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;{{range .items}}{{if not .status}}{{.metadata.name}}{{&#34;\n&#34;}}{{end}}{{end}}&#39;</span> | xargs oc adm certificate approve
+</code></pre></div><h4 id="119-check-node">1.19. Check node</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">oc get nodes
+</code></pre></div><h4 id="120-check-pods">1.20. Check Pods</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">oc get pods --all-namespaces
+</code></pre></div><h4 id="120-copy-kubeconfig-to-rootkube">1.20. Copy kubeconfig to /root/.kube</h4>
+<pre><code>cp /root/okd-config/auth/kubeconfig /root/.kube/config
+</code></pre><h4 id="121-access-to-dashboard">1.21. Access to dashboard</h4>
+<p>If needed, mapping your domain to /etc/hosts on your client.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vim /etc/hosts
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cfg" data-lang="cfg"><span style="color:#a6e22e">10.10.51.100 console-openshift-console.apps.openshift.riupie.io oauth-openshift.apps.openshift.riupie.io alertmanager-main-openshift-monitoring.apps.openshift.riupie.io</span>
+</code></pre></div><p>Then, access to dashboard from browser: <a href="https://console-openshift-console.apps.openshift.riupie.io">https://console-openshift-console.apps.openshift.riupie.io</a></p>
+<p><img src="imgs/okd-dashboard.png" alt="Dashboard OKD"></p>
+<h3 id="2-setup-persistent-storage">2. Setup Persistent Storage</h3>
+<h4 id="21-clone-external-storage-repository">2.1. Clone external storage repository</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">yum install git -y
+git clone https://github.com/kubernetes-incubator/external-storage.git kubernetes-incubator
+</code></pre></div><h4 id="22-create-namespaces-for-nfs-storage-provisioner">2.2. Create namespaces for NFS Storage provisioner</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">oc create namespace openshift-nfs-storage
+</code></pre></div><h4 id="23-add-monitoring-label-to-namespace">2.3. Add monitoring label to namespace</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">oc label namespace openshift-nfs-storage <span style="color:#e6db74">&#34;openshift.io/cluster-monitoring=true&#34;</span>
+</code></pre></div><h4 id="24-configure-deployment-and-rbac-for-nfs">2.4. Configure deployment and RBAC for NFS</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># Switch project</span>
+oc project openshift-nfs-storage
+
+<span style="color:#75715e"># Change namespace on deployment and rbac YAML file</span>
+cd /root/kubernetes-incubator/nfs-client/
+
+NAMESPACE<span style="color:#f92672">=</span><span style="color:#e6db74">`</span>oc project -q<span style="color:#e6db74">`</span>
+
+sed -i<span style="color:#e6db74">&#39;&#39;</span> <span style="color:#e6db74">&#34;s/namespace:.*/namespace: </span>$NAMESPACE<span style="color:#e6db74">/g&#34;</span> ./deploy/rbac.yaml 
+sed -i<span style="color:#e6db74">&#39;&#39;</span> <span style="color:#e6db74">&#34;s/namespace:.*/namespace: </span>$NAMESPACE<span style="color:#e6db74">/g&#34;</span> ./deploy/deployment.yaml
+</code></pre></div><h4 id="25-create-rbac">2.5. Create RBAC</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">oc create -f deploy/rbac.yaml
+oc adm policy add-scc-to-user hostmount-anyuid system:serviceaccount:$NAMESPACE:nfs-client-provisioner
+</code></pre></div><h4 id="26-configure-deployment">2.6. Configure deployment</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vim /root/kubernetes-incubator/nfs-client/deploy/deployment.yaml
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: apps/v1
+<span style="color:#66d9ef">kind</span>: Deployment
+<span style="color:#66d9ef">metadata</span>:
+  <span style="color:#66d9ef">name</span>: nfs-client-provisioner
+  <span style="color:#66d9ef">labels</span>:
+    <span style="color:#66d9ef">app</span>: nfs-client-provisioner
+  <span style="color:#75715e"># replace with namespace where provisioner is deployed</span>
+  <span style="color:#66d9ef">namespace</span>: openshift-nfs-storage
+<span style="color:#66d9ef">spec</span>:
+  <span style="color:#66d9ef">replicas</span>: <span style="color:#ae81ff">1</span>
+  <span style="color:#66d9ef">strategy</span>:
+    <span style="color:#66d9ef">type</span>: Recreate
+  <span style="color:#66d9ef">selector</span>:
+    <span style="color:#66d9ef">matchLabels</span>:
+      <span style="color:#66d9ef">app</span>: nfs-client-provisioner
+  <span style="color:#66d9ef">template</span>:
+    <span style="color:#66d9ef">metadata</span>:
+      <span style="color:#66d9ef">labels</span>:
+        <span style="color:#66d9ef">app</span>: nfs-client-provisioner
+    <span style="color:#66d9ef">spec</span>:
+      <span style="color:#66d9ef">serviceAccountName</span>: nfs-client-provisioner
+      <span style="color:#66d9ef">containers</span>:
+        - <span style="color:#66d9ef">name</span>: nfs-client-provisioner
+          <span style="color:#66d9ef">image</span>: quay.io/external_storage/nfs-client-provisioner:latest
+          <span style="color:#66d9ef">volumeMounts</span>:
+            - <span style="color:#66d9ef">name</span>: nfs-client-root
+              <span style="color:#66d9ef">mountPath</span>: /persistentvolumes
+          <span style="color:#66d9ef">env</span>:
+            - <span style="color:#66d9ef">name</span>: PROVISIONER_NAME
+              <span style="color:#66d9ef">value</span>: storage.io/nfs
+            - <span style="color:#66d9ef">name</span>: NFS_SERVER
+              <span style="color:#66d9ef">value</span>: <span style="color:#ae81ff">10.10.51.9</span>           <span style="color:#75715e"># Change this</span>
+            - <span style="color:#66d9ef">name</span>: NFS_PATH
+              <span style="color:#66d9ef">value</span>: /mnt/nfs_shares/okd  <span style="color:#75715e"># Change this</span>
+      <span style="color:#66d9ef">volumes</span>:
+        - <span style="color:#66d9ef">name</span>: nfs-client-root
+          <span style="color:#66d9ef">nfs</span>:
+            <span style="color:#66d9ef">server</span>: <span style="color:#ae81ff">10.10.51.9</span>            <span style="color:#75715e"># Change this</span>
+            <span style="color:#66d9ef">path</span>: /mnt/nfs_shares/okd     <span style="color:#75715e"># Change this</span>
+</code></pre></div><h4 id="27-configure-storageclass">2.7. Configure storageclass</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vim /root/kubernetes-incubator/nfs-client/deploy/class.yaml
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: storage.k8s.io/v1
+<span style="color:#66d9ef">kind</span>: StorageClass
+<span style="color:#66d9ef">metadata</span>:
+  <span style="color:#66d9ef">name</span>: managed-nfs-storage
+<span style="color:#66d9ef">provisioner</span>: storage.io/nfs <span style="color:#75715e"># or choose another name, must match deployment&#39;s env PROVISIONER_NAME&#39;</span>
+<span style="color:#66d9ef">parameters</span>:
+  <span style="color:#66d9ef">archiveOnDelete</span>: <span style="color:#e6db74">&#34;false&#34;</span>
+</code></pre></div><h4 id="28-deploy-deployment-and-storageclass">2.8. Deploy Deployment and StorageClass</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">oc create -f deploy/class.yaml 
+oc create -f deploy/deployment.yaml
+</code></pre></div><h4 id="29-verify-deployment">2.9. Verify deployment</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">oc get pods -n openshift-nfs-storage
+</code></pre></div><h3 id="3-setup-image-registry-persistent-storage">3. Setup Image Registry Persistent Storage</h3>
+<h4 id="31-set-default-storageclass">3.1. Set default storageclass</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">oc patch storageclass managed-nfs-storage -p <span style="color:#e6db74">&#39;{&#34;metadata&#34;: {&#34;annotations&#34;: {&#34;storageclass.kubernetes.io/is-default-class&#34;: &#34;true&#34;}}}&#39;</span>
+</code></pre></div><h4 id="32-change-image-registry-management-state">3.2. Change image registry management state</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">oc patch configs.imageregistry.operator.openshift.io cluster --type merge --patch <span style="color:#e6db74">&#39;{&#34;spec&#34;:{&#34;managementState&#34;:&#34;Managed&#34;}}&#39;</span>
+</code></pre></div><h4 id="33-verify-registry-pods">3.3. Verify registry pods</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">oc get pod -n openshift-image-registry
+</code></pre></div><h4 id="34-configure-storage">3.4. Configure storage.</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">oc edit configs.imageregistry.operator.openshift.io
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">...
+<span style="color:#66d9ef">spec</span>:
+.
+.
+.
+  <span style="color:#66d9ef">storage</span>:
+    <span style="color:#66d9ef">pvc</span>:
+      <span style="color:#66d9ef">claim</span>:
+...
+</code></pre></div><h4 id="35-check-clusteroperator-status-wait-until-availability-become-true">3.5. Check clusteroperator status. Wait until Availability become True.</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">oc get clusteroperator image-registry
+</code></pre></div><h4 id="36-check-if-pvc-status-bounded">3.6. Check if PVC status bounded</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">oc get pvc --all-namespaces
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">NAMESPACE                  NAME                     STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS          AGE
+openshift-image-registry   image-registry-storage   Bound    pvc-bf06735c-df5e-4b3c-9aba-f0e3bf598d80   100Gi      RWX            managed-nfs-storage   96s
+</code></pre></div><h4 id="37-confirm-that-all-the-cluster-components-are-online">3.7. Confirm that all the cluster components are online</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">watch -n5 oc get clusteroperators
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">NAME                                       VERSION                         AVAILABLE   PROGRESSING   DEGRADED   SINCE
+authentication                             4.5.0-0.okd-2020-09-18-202631   True        False         False	11d
+cloud-credential                           4.5.0-0.okd-2020-09-18-202631   True        False         False	11d
+cluster-autoscaler                         4.5.0-0.okd-2020-09-18-202631   True        False         False	11d
+config-operator                            4.5.0-0.okd-2020-09-18-202631   True        False         False	11d
+console                                    4.5.0-0.okd-2020-09-18-202631   True        False         False	11d
+csi-snapshot-controller                    4.5.0-0.okd-2020-09-18-202631   True        False         False	11d
+dns                                        4.5.0-0.okd-2020-09-18-202631   True        False         False	11d
+etcd                                       4.5.0-0.okd-2020-09-18-202631   True        False         False	11d
+image-registry                             4.5.0-0.okd-2020-09-18-202631   True        False         False	3m5s
+ingress                                    4.5.0-0.okd-2020-09-18-202631   True        False         False	11d
+insights                                   4.5.0-0.okd-2020-09-18-202631   True        False         False	11d
+kube-apiserver                             4.5.0-0.okd-2020-09-18-202631   True        False         False	11d
+kube-controller-manager                    4.5.0-0.okd-2020-09-18-202631   True        False         False	11d
+kube-scheduler                             4.5.0-0.okd-2020-09-18-202631   True        False         False	11d
+kube-storage-version-migrator              4.5.0-0.okd-2020-09-18-202631   True        False         False	11d
+machine-api                                4.5.0-0.okd-2020-09-18-202631   True        False         False	11d
+machine-approver                           4.5.0-0.okd-2020-09-18-202631   True        False         False	11d
+machine-config                             4.5.0-0.okd-2020-09-18-202631   True        False         False	11d
+marketplace                                4.5.0-0.okd-2020-09-18-202631   True        False         False	11d
+monitoring                                 4.5.0-0.okd-2020-09-18-202631   True        False         False	11d
+network                                    4.5.0-0.okd-2020-09-18-202631   True        False         False	11d
+node-tuning                                4.5.0-0.okd-2020-09-18-202631   True        False         False	11d
+openshift-apiserver                        4.5.0-0.okd-2020-09-18-202631   True        False         False	11d
+openshift-controller-manager               4.5.0-0.okd-2020-09-18-202631   True        False         False	11d
+openshift-samples                          4.5.0-0.okd-2020-09-18-202631   True        True          True	11d
+operator-lifecycle-manager                 4.5.0-0.okd-2020-09-18-202631   True        False         False	11d
+operator-lifecycle-manager-catalog         4.5.0-0.okd-2020-09-18-202631   True        False         False	11d
+operator-lifecycle-manager-packageserver   4.5.0-0.okd-2020-09-18-202631   True        False         False	11d
+service-ca                                 4.5.0-0.okd-2020-09-18-202631   True        False         False	11d
+storage                                    4.5.0-0.okd-2020-09-18-202631   True        False         False	11d
+</code></pre></div>
+  </div>
+</div>
+<div class="d-flex flex-row justify-content-center">
+  <h3 class="mb-1 mt-1 text-left mr-4">
+    
+    <i class="nav-menu-disabled fas fa-chevron-circle-left"></i>
+    
+  </h3>
+  <h3 class="mb-1 mt-1 text-left ml-4">
+    
+    <a
+      href="/blog/deploying-openstack-hci/"
+      title="Deploying HCI Openstack using Kolla Ansible"
+    >
+      <i class="nav-menu fas fa-chevron-circle-right"></i>
+    </a>
+    
+  </h3>
+</div>
+
+
+    </main>
+    
+    <footer class=" mt-2 mb-4 text-center ">
+  <span class="markdownify">2020</span>
+  <span >
+    &middot;
+    <i>
+      <a href="https://rahmatawe.com">
+        Rahmat Agung W
+      </a>
+    </i>
+  </span>
+</footer>
+
+    
+  </body>
+</html>

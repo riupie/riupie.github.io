@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+  <title>RahmatAwe</title>
+
+<meta name="theme-color" content="" />
+<meta charset="utf-8" />
+<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+<meta name="description" content="Living, Working, Sleeping" />
+<meta name="author" content="Rahmat Agung Wibowo" />
+<meta name="generator" content="aafu theme by Darshan in Hugo 0.74.3" />
+
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">        <link rel="manifest" href="/site.webmanifest">        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#252627">        <link rel="shortcut icon" href="/favicon.ico">        
+
+  <link
+    rel="stylesheet"
+    href="/css/bootstrap/bootstrap.min.css"
+  />
+  <link
+    rel="stylesheet"
+    href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+    integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+    crossorigin="anonymous"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdn.rawgit.com/jpswalsh/academicons/master/css/academicons.min.css"
+  />
+  <link
+    rel="stylesheet"
+    href="//fonts.googleapis.com/css?family=Didact+Gothic%7CRoboto:400%7CRoboto+Mono"
+  />
+  <link rel="stylesheet" href="/css/aafu_light.css" />
+  <link rel="stylesheet" href="/css/aafu.css" />
+
+  <script>
+    var themeColor = document.querySelector("meta[name=theme-color]");
+    window.onload = () => {
+      themeColor.content = getComputedStyle(document.body)["background-color"];
+      let defaultActivePanel = document.querySelector(".accordion.active");
+      if (defaultActivePanel) {
+        defaultActivePanel.nextElementSibling.style.maxHeight =
+          defaultActivePanel.nextElementSibling.scrollHeight + "px";
+      }
+    };
+    window.onresize = () => {
+      let defaultActivePanel = document.querySelector(".accordion.active");
+      if (defaultActivePanel) {
+        defaultActivePanel.nextElementSibling.style.maxHeight =
+          defaultActivePanel.nextElementSibling.scrollHeight + "px";
+      }
+    };
+  </script>
+</head>
+<body class="container">
+    <main style="min-height: calc(100vh - 60px);">
+      
+      <div class="d-flex flex-row row p-2">
+  <h3 class="main-menu mr-3">
+    <a href="https://www.rahmatawe.com/">Home</a>
+  </h3>
+  <h3 class="main-menu mr-3">
+    <a href="/blog">Blog</a>
+  </h3>
+  <h3 class="main-menu mr-3">
+    <a href="/categories">Categories</a>
+  </h3>
+</div>
+
+      
+<div class="ml-auto mr-auto row row-eq-height rounded">
+  <div class="col-md-5 text-center p-2 mt-1">
+    <div class="profile-area rounded text-center position-relative shadow">
+      <div class="d-flex justify-content-center pt-2">
+  <div class="w-100 h-100">
+    <img
+      class="rounded rounded-circle mt-4"
+      src="/images/profile.jpg"
+      alt="Rahmat Agung Wibowo"
+      style="width: 95%; max-width: 300px;"
+    />
+  </div>
+</div>
+
+      <div class="p-2">
+        <h1 class="mb-0">Rahmat Agung Wibowo</h1>
+<h2 class="mb-0">Cloud Engineer</h2>
+<h3 class="mb-0">Bogor, Indonesia</h3>
+<div class="mt-2 d-flex flex-wrap justify-content-center">
+  
+  <div style="height:45px; width:45px;">
+    <a href="https://www.linkedin.com/in/rahmataw/">
+      <i class="zoomlink mt-1 fab fa-linkedin-in"></i>
+    </a>
+  </div>
+  
+  <div style="height:45px; width:45px;">
+    <a href="https://github.com/riupie">
+      <i class="zoomlink mt-1 fab fa-github"></i>
+    </a>
+  </div>
+  
+  <div style="height:45px; width:45px;">
+    <a href="mailto:rahmataw96@gmail.com">
+      <i class="zoomlink mt-1 fas fa-envelope"></i>
+    </a>
+  </div>
+  
+</div>
+ <footer class=" mt-2 mb-2 ">
+  <span class="markdownify">2020</span>
+  <span >
+    &middot;
+    <i>
+      <a href="https://rahmatawe.com">
+        Rahmat Agung W
+      </a>
+    </i>
+  </span>
+</footer>
+
+      </div>
+    </div>
+  </div>
+  <div class="col-md-7 pt-2 mt-3">
+    
+    <h2 class="accordion  active ">
+      
+      <span onclick="expandAccordion(this)" style="cursor: pointer;">
+        <i class="fas fa-user"></i>
+        About Me</span>
+    </h2>
+    <div
+      class="panel overflow-hidden"
+      
+    >
+      <p class="markdownify">
+  An IT Enthusiast interested in cloud computing, devops and security. I am working as cloud engineer and usually deploy Openstack, Kubernetes, Openshift and other devops related infrastructure. Love linux and cat. :)
+</p>
+
+    </div>
+    
+    <h2 class="accordion ">
+      
+      <span onclick="expandAccordion(this)" style="cursor: pointer;">
+        <i class="fas fa-briefcase"></i>
+        Experiences</span>
+    </h2>
+    <div
+      class="panel overflow-hidden"
+      
+    >
+      
+<dl>
+  <dt class="mb-0">
+    Cloud Engineer
+  </dt>
+  <dd class="mb-0 ml-3">
+    <span class="markdownify">2019 - <em>Present</em></span>
+    &middot;
+    
+    PT. Boer Technology
+    
+  </dd>
+  <dd class="mb-0 ml-4 markdownify">Research and implement IT infrastructure on client site, usually using technology such as Linux, Openstack or Kubernetes.</dd>
+</dl>
+
+<dl>
+  <dt class="mb-0">
+    Trainer
+  </dt>
+  <dd class="mb-0 ml-3">
+    <span class="markdownify">2019 - <em>Present</em></span>
+    &middot;
+    
+    PT. Boer Technology
+    
+  </dd>
+  <dd class="mb-0 ml-4 markdownify">Do professional training for Kubernetes and RHCSA (RedHat Certified System Administration)</dd>
+</dl>
+
+<dl>
+  <dt class="mb-0">
+    IT Support
+  </dt>
+  <dd class="mb-0 ml-3">
+    <span class="markdownify">2018 - 2019</span>
+    &middot;
+    
+    Merapi Online
+    
+  </dd>
+  <dd class="mb-0 ml-4 markdownify">Configure and maintain networking devices such as Mikrotik, Ubiquiti and NAS Server (Synology)</dd>
+</dl>
+
+
+    </div>
+    
+    <h2 class="accordion ">
+      
+      <span onclick="expandAccordion(this)" style="cursor: pointer;">
+        <i class="fas fa-graduation-cap"></i>
+        Education</span>
+    </h2>
+    <div
+      class="panel overflow-hidden"
+      
+    >
+      
+<dl>
+  <dt>Bachelor of Applied Science (BAS) in Networking Technology</dt>
+  <dd class="mb-0 ml-3">2014 - 2019 &middot; Universitas Gadjah Mada</dd>
+  
+  <dd class="mb-0 ml-4">
+    Thesis:
+    <a href="http://etd.repository.ugm.ac.id/penelitian/detail/174658"
+      ><i>Analysis and Management of Honeypot Log on an Infrastructure as a Service (IaaS) using Elastic Stack</i></a
+    >
+  </dd>
+  
+</dl>
+
+
+    </div>
+    
+    <h2 class="accordion ">
+      
+      <span onclick="expandAccordion(this)" style="cursor: pointer;">
+        <i class=""></i>
+        </span>
+    </h2>
+    <div
+      class="panel overflow-hidden"
+      
+    >
+      
+
+
+    </div>
+    
+    <h2 class="accordion ">
+      
+      <span onclick="expandAccordion(this)" style="cursor: pointer;">
+        <i class=""></i>
+        </span>
+    </h2>
+    <div
+      class="panel overflow-hidden"
+      
+    >
+      <dl>
+  
+</dl>
+
+    </div>
+    
+    <h2 class="accordion ">
+      
+      <span onclick="expandAccordion(this)" style="cursor: pointer;">
+        <i class="fas fa-cogs"></i>
+        Skills</span>
+    </h2>
+    <div
+      class="panel overflow-hidden"
+      
+      id="skill-panel"
+      
+    >
+      <script>
+  let skillPanel = document.querySelector("#skill-panel")
+    .previousElementSibling;
+  skillPanel.addEventListener("click", function() {
+    let skillBars = document.querySelectorAll("#skill-percent");
+    skillBars.forEach(elem => {
+      elem.style.width = elem.classList[0];
+    });
+  });
+</script>
+
+<code>Linux Administration</code>
+<div class="w-100 skillbar mt-1 mb-3">
+  <div id="skill-percent" class="80%" style="width: 0;"></div>
+</div>
+
+<code>Openstack</code>
+<div class="w-100 skillbar mt-1 mb-3">
+  <div id="skill-percent" class="75%" style="width: 0;"></div>
+</div>
+
+<code>Kubernetes</code>
+<div class="w-100 skillbar mt-1 mb-3">
+  <div id="skill-percent" class="70%" style="width: 0;"></div>
+</div>
+
+<code>Networking</code>
+<div class="w-100 skillbar mt-1 mb-3">
+  <div id="skill-percent" class="65%" style="width: 0;"></div>
+</div>
+
+
+    </div>
+    
+    <h2 class="accordion ">
+      
+      <span onclick="expandAccordion(this)" style="cursor: pointer;">
+        <i class="fas fa-gamepad"></i>
+        Hobbies</span>
+    </h2>
+    <div
+      class="panel overflow-hidden"
+      
+    >
+      <ul class="pl-0">
+  
+  <li class="list-unstyled mb-2">Reading</li>
+  
+  <li class="list-unstyled mb-2">Gaming</li>
+  
+  <li class="list-unstyled mb-2">Travelling</li>
+  
+</ul>
+
+    </div>
+    
+    <script src="/js/accordion.js"></script>
+  </div>
+</div>
+
+    </main>
+    
+  </body>
+</html>

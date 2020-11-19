@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>devops on </title>
+    <link>https://www.rahmatawe.com/categories/devops/</link>
+    <description>Recent content in devops on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 06 Nov 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://www.rahmatawe.com/categories/devops/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Implementing LDAP Authentication for Kubernetes using Dex on Ubuntu 18.04</title>
+      <link>https://www.rahmatawe.com/blog/ldap-kubernetes-integration/</link>
+      <pubDate>Fri, 06 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.rahmatawe.com/blog/ldap-kubernetes-integration/</guid>
+      <description>Environment # Servers ag-k8s-master0 : 10.54.54.10/24 (Kubernetes Master) ag-k8s-worker0 : 10.54.54.20/24 (Kubernetes Worker) ag-k8s-worker1 : 10.54.54.21/24 (Kubernetes Worker) ag-k8s-ldap : 10.54.54.30/24 (LDAP Server, DNS Server) # Packages Release Ubuntu 18.04 Kubernetes 1.19 OpenLDAP 2.4 Part 1: Pre-Flight 1. Setup DNS Server For simplicity, I used dnsmasq with minimal configuration. You can use your prefered DNS Server (ex: bind9).
+1.1. Install DNSMASQ root@ag-k8s-ldap:~# apt -y install dnsmasq 1.2. Configure Dnsmasq. Uncomment line below.</description>
+    </item>
+    
+  </channel>
+</rss>
