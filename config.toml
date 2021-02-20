@@ -1,0 +1,217 @@
+baseURL = "https://www.rahmatawe.com/"
+languageCode = "en-us"
+theme = "aafu"
+
+
+[taxonomies]
+category = "categories"
+tag = "tags"
+series = "series"
+
+[params]
+    title = "RahmatAwe"
+    author = "Rahmat Agung Wibowo"
+    description = "Living, Working, Sleeping"
+    copyright = "2021"
+
+    [params.theme]
+        # Available themes are 'light', 'dark', and 'pinkish'
+        mainTheme = "light"
+        # setting false below will hide 'aafu by darshan' displayed under the profile pic
+        showAttribute = true
+        singlePage = false
+
+    [params.favicons]
+        use = true
+        metas = '''
+        <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+        <link rel="manifest" href="site.webmanifest">
+        <link rel="mask-icon" href="safari-pinned-tab.svg" color="#252627">
+        <link rel="shortcut icon" href="favicon.ico">
+        '''
+
+    # Profile section
+    [params.profile]
+        name = "Rahmat Agung Wibowo"
+		tagline = "Cloud Engineer"
+		location = "Jakarta, Indonesia"
+        photo = "profile.jpg"
+
+    # Section for links to social websites
+    [params.social]
+        title = "Links"
+
+        [[params.social.list]]
+            class = "fab"
+            icon = "fa-linkedin-in"
+            url = "https://www.linkedin.com/in/rahmataw/"
+            title = "LinkedIn"		
+        [[params.social.list]]
+            class = "fab"
+            icon = "fa-github"
+            url = "https://github.com/riupie"
+            title = "GitHub"
+	[[params.social.list]]
+            class = "fas"
+            icon = "fa-envelope"
+            url = "mailto:rahmataw96@gmail.com"
+            title = "Email"
+
+    #Specify what is showin in the Accordion
+    [[params.showInAccordion]]
+        item = "aboutme"
+        expand = true   # true for the section that is initially expanded
+    [[params.showInAccordion]]
+        item = "experience"
+    [[params.showInAccordion]]
+        item = "education"
+    [[params.showInAccordion]]
+        item = "publication"
+    [[params.showInAccordion]]
+        item = "project"
+    [[params.showInAccordion]]
+        item = "skill"
+    [[params.showInAccordion]]
+        item = "hobby"
+
+    [params.aboutme]
+        title = "About Me"
+        icon = "fas fa-user"
+        description = "An IT Enthusiast interested in cloud computing, devops and security. I am working as cloud engineer and usually deploy Openstack, Kubernetes, Openshift and other devops related infrastructure. Love linux and cat. :) "
+
+    # Experience section
+    [params.experience]
+        title = "Experiences"
+        icon = "fas fa-briefcase"
+
+        [[params.experience.list]]
+            position = "Cloud Engineer"
+            dates = "2019 - 2020"
+            company = "PT. Boer Technology"
+            details = "Research and implement IT infrastructure on-premise using open source and cloud native technology such as Openstack, Kubernetes, Docker, etc. "
+#        [[params.experience.list]]
+#            position = "Trainer"
+#            dates = "2019 - *Present*"
+#            company = "PT. Boer Technology"
+#            details = "Do professional training for Kubernetes and RHCSA (RedHat Certified System Administration)"
+        [[params.experience.list]]
+            position = "IT Support"
+            dates = "2018 - 2019"
+            company = "Merapi Online"
+            details = "Configure and maintain networking devices such as Mikrotik, Ubiquiti and NAS Server (Synology)"
+    # Education section
+    [params.education]
+        title = "Education"
+        icon = "fas fa-graduation-cap"
+
+        [[params.education.list]]
+            degree = "Bachelor of Applied Science (BAS) in Networking Technology"
+            college = "Universitas Gadjah Mada"
+            dates = "2014 - 2019"
+            thesis_title = "Analysis and Management of Honeypot Log on an Infrastructure as a Service (IaaS) using Elastic Stack"
+            thesis_link = "http://etd.repository.ugm.ac.id/penelitian/detail/174658"
+
+#    # Publication section
+#    [params.publication]
+#        title = "Publications"
+#        icon = "fas fa-book"
+#        #The order below determines the order in which the items appear in "Publications" section
+#        format = ["date", "authors", "title", "journal"]
+#        #If you don't want to group publications, comment the line below by adding # at the beginning
+#        types = ["Journal Articles", "Proceedings"]
+#
+#        [[params.publication.list]]
+#            title = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+#            authors = "F Last, F Second, P secondary"
+#            date = "2018"
+#            journal = "Journal of Field 52 (16), 9033-9044"
+#            link = "#"
+#            type = "Journal Articles"
+#
+#        [[params.publication.list]]
+#            title = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+#            authors = "F Last, F Second, P secondary"
+#            date = "2018"
+#            journal = "Journal of Field 52 (16), 9033-9044"
+#            link = "#"
+#            type = "Journal Articles"
+#		
+#        [[params.publication.list]]
+#            title = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+#            authors = "F Last, F Second, P secondary"
+#            date = "2018"
+#            journal = "Journal of Field 52 (16), 9033-9044"
+#            link = "#"
+#            type = "Proceedings"
+
+#    # Project section
+#    [params.project]
+#        title = "Projects"
+#        icon = "fas fa-project-diagram"
+#
+#        [[params.project.list]]
+#            title = "project"
+#            url = "#"
+#            description = "Description of the project"
+#        [[params.project.list]]
+#            title = "project"
+#            url = "#"
+#            description = "Description of the project"
+#        [[params.project.list]]
+#            title = "project"
+#            url = "#"
+#            description = "Description of the project"
+#        [[params.project.list]]
+#            title = "project"
+#            url = "#"
+#            description = "Description of the project"            
+
+    # Skill section
+    [params.skill]
+        title = "Skills"
+        panelId = "skill-panel"
+        icon = "fas fa-cogs"
+
+        [[params.skill.list]]
+            skill = "Linux Administration"
+            skillrating = 80
+        [[params.skill.list]]
+            skill = "Openstack"
+            skillrating = 75
+        [[params.skill.list]]
+            skill = "Kubernetes"
+            skillrating = 70
+        [[params.skill.list]]
+            skill = "Networking"
+            skillrating = 65
+    # Hobby section
+    [params.hobby]
+        title = "Hobbies"
+        icon = "fas fa-gamepad"
+		
+        [[params.hobby.list]]		
+		    hobby = "Reading"
+        [[params.hobby.list]]		
+		    hobby = "Gaming"
+        [[params.hobby.list]]		
+		    hobby = "Travelling"
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.extensions]
+      definitionList = true
+      footnote = true
+      linkify = true
+      strikethrough = true
+      table = true
+      taskList = true
+      typographer = true
+    [markup.goldmark.parser]
+      attribute = true
+      autoHeadingID = true
+      autoHeadingIDType = "github"
+    [markup.goldmark.renderer]
+      hardWraps = false
+      unsafe = true
+      xhtml = false
