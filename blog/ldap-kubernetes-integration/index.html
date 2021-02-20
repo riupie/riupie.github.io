@@ -1,0 +1,626 @@
+<!doctype html><html lang=en-us><head><title>RahmatAwe</title><meta name=theme-color content><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><meta name=description content="Living, Working, Sleeping"><meta name=author content="Rahmat Agung Wibowo"><meta name=generator content="aafu theme by Darshan in Hugo 0.80.0"><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/site.webmanifest><link rel=mask-icon href=/safari-pinned-tab.svg color=#252627><link rel="shortcut icon" href=/favicon.ico><link rel=stylesheet href=/css/bootstrap/bootstrap.min.css><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.15.2/css/all.css integrity=sha384-vSIIfh2YWi9wW0r9iZe7RJPrKwp6bG+s9QZMoITbCckVJqGCCRhc+ccxNcdpHuYu crossorigin=anonymous><link rel=stylesheet href=https://cdn.rawgit.com/jpswalsh/academicons/master/css/academicons.min.css><link rel=stylesheet href="//fonts.googleapis.com/css?family=Didact+Gothic%7CRoboto:400%7CRoboto+Mono"><link rel=stylesheet href=/css/aafu_light.css><link rel=stylesheet href=/css/aafu.css><script>var themeColor=document.querySelector("meta[name=theme-color]");window.onload=()=>{themeColor.content=getComputedStyle(document.body)["background-color"];let defaultActivePanel=document.querySelector(".accordion.active");if(defaultActivePanel){defaultActivePanel.nextElementSibling.style.maxHeight=defaultActivePanel.nextElementSibling.scrollHeight+"px";}};window.onresize=()=>{let defaultActivePanel=document.querySelector(".accordion.active");if(defaultActivePanel){defaultActivePanel.nextElementSibling.style.maxHeight=defaultActivePanel.nextElementSibling.scrollHeight+"px";}};</script></head><body class=container><main style="min-height:calc(100vh - 60px)"><div class="d-flex flex-row row p-2"><h3 class="main-menu mr-3"><a href=https://www.rahmatawe.com/>Home</a></h3><h3 class="main-menu mr-3"><a href=/blog>Blog</a></h3><h3 class="main-menu mr-3"><a href=/categories>Categories</a></h3></div><div class="rounded p-2 aafu-border border"><div class="border-bottom aafu-border"><h1 class=top-h1 style=font-size:2.75em>Implementing LDAP Authentication for Kubernetes using Dex on Ubuntu 18.04</h1><div class=mb-2><p class=mb-1>November 6, 2020</p><p class="metadata-value mb-1 taxa taxa-container-div list-categories">Categories:
+<a class="pl-1 pr-1 rounded border border-secondary" href=/categories/devops title=categories>devops</a></p><p class="metadata-value mb-1 taxa taxa-container-div list-tags">Tags:
+<a class="pl-1 pr-1 rounded border border-secondary" href=/tags/ldap title=tags>ldap</a>
+<a class="pl-1 pr-1 rounded border border-secondary" href=/tags/kubernetes title=tags>kubernetes</a>
+<a class="pl-1 pr-1 rounded border border-secondary" href=/tags/linux title=tags>linux</a></p></div></div><div class=content><h2 id=environment>Environment</h2><pre><code># Servers
+ag-k8s-master0 : 10.54.54.10/24  (Kubernetes Master)
+ag-k8s-worker0 : 10.54.54.20/24  (Kubernetes Worker)
+ag-k8s-worker1 : 10.54.54.21/24  (Kubernetes Worker)
+ag-k8s-ldap    : 10.54.54.30/24  (LDAP Server, DNS Server)
+
+# Packages Release
+Ubuntu 18.04
+Kubernetes 1.19
+OpenLDAP 2.4
+</code></pre><h2 id=part-1-pre-flight>Part 1: Pre-Flight</h2><h3 id=1-setup-dns-server>1. Setup DNS Server</h3><p>For simplicity, I used dnsmasq with minimal configuration. You can use your prefered DNS Server (ex: bind9).</p><h4 id=11-install-dnsmasq>1.1. Install DNSMASQ</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>root@ag-k8s-ldap:~# apt -y install dnsmasq
+</code></pre></div><h4 id=12-configure-dnsmasq-uncomment-line-below>1.2. Configure Dnsmasq. Uncomment line below.</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>root@ag-k8s-ldap:~# vim /etc/dnsmasq.conf
+
+domain-needed
+bogus-priv
+strict-order
+
+root@ag-k8s-ldap:~# systemctl restart dnsmasq
+</code></pre></div><h4 id=13-add-dns-records-on-etchosts>1.3. Add DNS Records on /etc/hosts.</h4><pre><code>10.54.54.10 dex.kubernetes.riupie.com kubectl.kubernetes.riupie.com dashboard.kubernetes.riupie.com
+10.54.54.30 ldap.riupie.com
+</code></pre><h4 id=14-add-dns-server-to-each-kubernetes-nodes>1.4. Add DNS Server to each Kubernetes nodes.</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ubuntu@ag-k8s-master0:~$ sudo vim /etc/netplan/50-cloud-init.yaml
+</code></pre></div><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>network</span>:
+    <span style=color:#f92672>ethernets</span>:
+        <span style=color:#f92672>ens3</span>:
+            <span style=color:#f92672>addresses</span>:
+            - <span style=color:#ae81ff>10.54.54.10</span><span style=color:#ae81ff>/24</span>
+            <span style=color:#f92672>gateway4</span>: <span style=color:#ae81ff>10.54.54.1</span>
+            <span style=color:#f92672>nameservers</span>:
+                <span style=color:#f92672>addresses</span>:
+                - <span style=color:#ae81ff>10.54.54.30</span>
+    <span style=color:#f92672>version</span>: <span style=color:#ae81ff>2</span>
+</code></pre></div><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ubuntu@ag-k8s-master0:~$ sudo netplan apply
+</code></pre></div><h4 id=15-verify-dns-server>1.5. Verify DNS Server</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ubuntu@ag-k8s-master0:~$ nslookup ldap.riupie.com
+
+Server:		127.0.0.53
+Address:	127.0.0.53#53
+
+Non-authoritative answer:
+Name:	ldap.riupie.com
+Address: 10.54.54.30
+</code></pre></div><h3 id=2-setup-ldap-server>2. Setup LDAP Server</h3><h4 id=21-install-openldap>2.1. Install OpenLDAP</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>root@ag-k8s-ldap:~# apt -y install slapd ldap-utils -y
+
+ +--------------------------| Configuring slapd |-------------------------+
+ | Please enter the password <span style=color:#66d9ef>for</span> the admin entry in your LDAP directory.  |
+ |                                                                        |
+ | Administrator password:                                                |
+ |                                                                        |
+ | ********______________________________________________________________ |
+ |                                                                        |
+ |                                 &lt;Ok&gt;                                   |
+ |                                                                        |
+ +------------------------------------------------------------------------+
+</code></pre></div><h4 id=22-configure-ldap-server>2.2. Configure LDAP Server</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>root@ag-k8s-ldap:~# dpkg-reconfigure slapd
+</code></pre></div><h4 id=23-verify-configuration>2.3. Verify configuration</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>root@ag-k8s-ldap:~# slapcat
+
+dn: dc<span style=color:#f92672>=</span>riupie,dc<span style=color:#f92672>=</span>com
+objectClass: top
+objectClass: dcObject
+objectClass: organization
+o: Riupie
+dc: riupie
+structuralObjectClass: organization
+entryUUID: d89b3fe8-8c51-103a-8b49-d95647de1143
+creatorsName: cn<span style=color:#f92672>=</span>admin,dc<span style=color:#f92672>=</span>riupie,dc<span style=color:#f92672>=</span>com
+createTimestamp: 20200916101927Z
+entryCSN: 20200916101927.851031Z#000000#000#000000
+modifiersName: cn<span style=color:#f92672>=</span>admin,dc<span style=color:#f92672>=</span>riupie,dc<span style=color:#f92672>=</span>com
+modifyTimestamp: 20200916101927Z
+
+dn: cn<span style=color:#f92672>=</span>admin,dc<span style=color:#f92672>=</span>riupie,dc<span style=color:#f92672>=</span>com
+objectClass: simpleSecurityObject
+objectClass: organizationalRole
+cn: admin
+description: LDAP administrator
+userPassword:: e1NTSEF9UGM2NjNPT0M3MXhwMVMvRGZyVCszSFNBeEpzM1ZBdXA<span style=color:#f92672>=</span>
+structuralObjectClass: organizationalRole
+entryUUID: d89b72ba-8c51-103a-8b4a-d95647de1143
+creatorsName: cn<span style=color:#f92672>=</span>admin,dc<span style=color:#f92672>=</span>riupie,dc<span style=color:#f92672>=</span>com
+createTimestamp: 20200916101927Z
+entryCSN: 20200916101927.852372Z#000000#000#000000
+modifiersName: cn<span style=color:#f92672>=</span>admin,dc<span style=color:#f92672>=</span>riupie,dc<span style=color:#f92672>=</span>com
+modifyTimestamp: 20200916101927Z
+</code></pre></div><h4 id=24-add-initial-data-for-kubernetes-user>2.4. Add initial data for Kubernetes User</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ubuntu@ag-k8s-ldap:~$ vim k8s.ldif
+
+dn: ou<span style=color:#f92672>=</span>People,dc<span style=color:#f92672>=</span>riupie,dc<span style=color:#f92672>=</span>com
+objectClass: organizationalUnit
+ou: People
+
+dn: cn<span style=color:#f92672>=</span>jane,ou<span style=color:#f92672>=</span>People,dc<span style=color:#f92672>=</span>riupie,dc<span style=color:#f92672>=</span>com
+objectClass: person
+objectClass: inetOrgPerson
+sn: doe
+cn: jane
+mail: janedoe@riupie.com
+uid: jane
+userPassword: jane@123
+
+dn: cn<span style=color:#f92672>=</span>john,ou<span style=color:#f92672>=</span>People,dc<span style=color:#f92672>=</span>riupie,dc<span style=color:#f92672>=</span>com
+objectClass: person
+objectClass: inetOrgPerson
+sn: doe
+cn: john
+mail: johndoe@riupie.com
+uid: john
+userPassword: john@123
+
+dn: ou<span style=color:#f92672>=</span>Groups,dc<span style=color:#f92672>=</span>riupie,dc<span style=color:#f92672>=</span>com
+objectClass: organizationalUnit
+ou: Groups
+
+dn: cn<span style=color:#f92672>=</span>admins,ou<span style=color:#f92672>=</span>Groups,dc<span style=color:#f92672>=</span>riupie,dc<span style=color:#f92672>=</span>com
+objectClass: groupOfNames
+cn: admins
+member: cn<span style=color:#f92672>=</span>john,ou<span style=color:#f92672>=</span>People,dc<span style=color:#f92672>=</span>riupie,dc<span style=color:#f92672>=</span>com
+
+dn: cn<span style=color:#f92672>=</span>developers,ou<span style=color:#f92672>=</span>Groups,dc<span style=color:#f92672>=</span>riupie,dc<span style=color:#f92672>=</span>com
+objectClass: groupOfNames
+cn: developers
+member: cn<span style=color:#f92672>=</span>jane,ou<span style=color:#f92672>=</span>People,dc<span style=color:#f92672>=</span>riupie,dc<span style=color:#f92672>=</span>com
+
+<span style=color:#75715e>#Insert into LDAP database</span>
+ubuntu@ag-k8s-ldap:~$ ldapadd -cx -D cn<span style=color:#f92672>=</span>admin,dc<span style=color:#f92672>=</span>riupie,dc<span style=color:#f92672>=</span>com -W -f k8s.ldif
+</code></pre></div><h2 id=part-2-bootstrapping-kubernetes-cluster>Part 2: Bootstrapping Kubernetes Cluster</h2><h3 id=3-deploy-kubernetes-cluster-run-as-regular-user>3. Deploy Kubernetes Cluster (run as regular user)</h3><h4 id=31-install-docker-on-all-kubernetes-nodes>3.1. Install Docker on all Kubernetes nodes</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>sudo apt-get update
+sudo apt install docker.io -y
+
+sudo systemctl enable docker
+sudo systemctl start docker
+sudo systemctl status docker
+</code></pre></div><h4 id=32-add-kubernetes-repository-on-all-kubernetes-nodes>3.2. Add kubernetes repository on all Kubernetes nodes</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
+sudo apt-add-repository <span style=color:#e6db74>&#34;deb http://apt.kubernetes.io/ kubernetes-xenial main&#34;</span>
+</code></pre></div><h4 id=33-install-kubernetes-installation-tools-on-all-kubernetes-nodes>3.3. Install Kubernetes Installation Tools on all Kubernetes nodes</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>sudo apt install kubeadm kubelet kubectl -y
+sudo apt-mark hold kubeadm kubelet kubectl
+kubeadm version
+</code></pre></div><h4 id=34-disable-swap-memory-on-all-kubernetes-nodes>3.4. Disable Swap Memory on all Kubernetes nodes</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>sudo swapoff –a
+</code></pre></div><h4 id=35-initialize-kubernetes-on-master-node>3.5. Initialize Kubernetes on Master Node</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ubuntu@ag-k8s-master0:~$ sudo kubeadm init --pod-network-cidr<span style=color:#f92672>=</span>192.168.0.0/16
+</code></pre></div><h4 id=36-create-cluster-directory-on-master-node>3.6. Create cluster directory on Master Node</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ubuntu@ag-k8s-master0:~$ mkdir -p $HOME/.kube
+ubuntu@ag-k8s-master0:~$ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+ubuntu@ag-k8s-master0:~$ sudo chown <span style=color:#66d9ef>$(</span>id -u<span style=color:#66d9ef>)</span>:<span style=color:#66d9ef>$(</span>id -g<span style=color:#66d9ef>)</span> $HOME/.kube/config
+</code></pre></div><h4 id=37-install-calico-cni-from-master-node>3.7. Install Calico CNI from Master Node</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ubuntu@ag-k8s-master0:~$ curl https://docs.projectcalico.org/manifests/calico.yaml -O
+ubuntu@ag-k8s-master0:~$ kubectl apply -f calico.yaml
+</code></pre></div><h4 id=38-print-join-command-from-master-node>3.8. Print join command from Master Node</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ubuntu@ag-k8s-master0:~$ sudo kubeadm token create --print-join-command
+
+kubeadm join 10.54.54.10:6443 --token 2a80cg.tatnw7n3jaqsio5c     --discovery-token-ca-cert-hash sha256:70c6d0e5c2c9d3bfab4797dc9177b61136e5e690035042b8bdac58776f55818a
+</code></pre></div><h4 id=39-join-nodes-execute-on-each-worker-nodes>3.9. Join nodes. Execute on each worker nodes</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>kubeadm join 10.54.54.10:6443 --token ksgb87.m58b7ov99tc6p47p --discovery-token-ca-cert-hash sha256:70c6d0e5c2c9d3bfab4797dc9177b61136e5e690035042b8bdac58776f55818a
+</code></pre></div><h4 id=310-verify-cluster>3.10. Verify cluster</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ubuntu@ag-k8s-master0:~$ kubectl get nodes
+ubuntu@ag-k8s-master0:~$ kubectl cluster-info
+</code></pre></div><h4 id=311-install-helm-3-from-master-node>3.11. Install Helm 3 from Master Node</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ubuntu@ag-k8s-master0:~$ sudo apt-get install apt-transport-https -y
+
+ubuntu@ag-k8s-master0:~$ echo <span style=color:#e6db74>&#34;deb https://baltocdn.com/helm/stable/debian/ all main&#34;</span> | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+
+ubuntu@ag-k8s-master0:~$ sudo apt-get update
+ubuntu@ag-k8s-master0:~$ sudo apt-get install helm
+</code></pre></div><h2 id=part-3-deploy-cert-manager>Part 3: Deploy Cert Manager</h2><h3 id=4-install-nginx-controller-community>4. Install NGINX Controller Community</h3><h4 id=41-add-nginx-controller-community-helm-repo>4.1. Add NGINX Controller Community helm repo</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ubuntu@ag-k8s-master0:~$ helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+ubuntu@ag-k8s-master0:~$ helm install nginx-controller-community ingress-nginx/ingress-nginx
+</code></pre></div><h4 id=42-expose-nginx-controller-as-externalips-only-needed-if-you-have-no-service-type-loadbalancer-support>4.2. Expose NGINX Controller as externalIPs (only needed if you have no Service Type LoadBalancer support)</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ubuntu@ag-k8s-master0:~$ kubectl edit svc nginx-controller-community-ingress-nginx-controller
+
+* add externalIP on thi section
+...
+  selector:
+    app: ingress-nginx
+  externalIPs:
+  - IP-MASTER-NODE
+...
+</code></pre></div><h3 id=5-install-cert-manager>5. Install cert-manager</h3><h4 id=51-generate-self-signed-cert-for-kubernetesriupiecom-domain>5.1. Generate Self Signed cert for *.kubernetes.riupie.com domain</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ubuntu@ag-k8s-master0:~$ openssl req -newkey rsa:4096 <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>-x509 <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>-sha256 <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>-days <span style=color:#ae81ff>3650</span> <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>-nodes <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>-out riupie.com.crt <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>-keyout riupie.com.key
+
+ubuntu@ag-k8s-master0:~$ mkdir .cert
+ubuntu@ag-k8s-master0:~$ mv riupie.com.* .cert
+
+<span style=color:#75715e>#Share root CA file (riupie.com.crt) to each Kubernetes nodes. For example I do this on master nodes</span>
+ubuntu@ag-k8s-master0:~$ sudo cp .cert/riupie.crt /etc/ssl/certs/riupie.com.pem
+ubuntu@ag-k8s-master0:~$ sudo update-ca-certificates
+
+</code></pre></div><h4 id=52-create-namespaces>5.2. Create namespaces</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ubuntu@ag-k8s-master0:~$ kubectl create namespace cert-manager
+</code></pre></div><h4 id=53-add-helm-repo>5.3 Add helm repo</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ubuntu@ag-k8s-master0:~$ helm repo add jetstack https://charts.jetstack.io
+ubuntu@ag-k8s-master0:~$ helm repo update
+</code></pre></div><h4 id=54-install-cert-managercrd>5.4. Install cert-manager+CRD</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ubuntu@ag-k8s-master0:~$ helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.0.1 --set installCRDs<span style=color:#f92672>=</span>true
+</code></pre></div><h4 id=55-check-pods>5.5. Check pods</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ubuntu@ag-k8s-master0:~$ kubectl get pods --namespace cert-manager
+</code></pre></div><h4 id=56-create-secret-for-ca-root>5.6 Create secret for CA Root</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ubuntu@ag-k8s-master0:~$ kubectl -n cert-manager create secret tls ssc-tls-secret --key<span style=color:#f92672>=</span>/home/ubuntu/.cert/riupie.com.key --cert<span style=color:#f92672>=</span>/home/ubuntu/.cert/riupie.com.crt
+</code></pre></div><h4 id=57-create-issuer>5.7. Create Issuer</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ubuntu@ag-k8s-master0:~$ mkdir cert-manager
+ubuntu@ag-k8s-master0:~$ cd cert-manager
+ubuntu@ag-k8s-master0:~/cert-manager$ vim cluster-issuer.yml
+</code></pre></div><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>---
+<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>cert-manager.io/v1alpha2</span>
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>ClusterIssuer</span>
+<span style=color:#f92672>metadata</span>:
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>tls-ca-issuer</span>
+  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>cert-manager</span>
+<span style=color:#f92672>spec</span>:
+  <span style=color:#f92672>ca</span>:
+    <span style=color:#f92672>secretName</span>: <span style=color:#ae81ff>ssc-tls-secret</span>
+</code></pre></div><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ubuntu@ag-k8s-master0:~/cert-manager$ kubectl create -f cluster-issuer.yml
+</code></pre></div><h2 id=part-4-deploy-dex>Part 4: Deploy Dex</h2><h3 id=6-deploy-dex-deployment-and-resource>6. Deploy Dex Deployment and Resource</h3><h4 id=61-create-auth-system-namespace>6.1. Create auth-system namespace</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>kubectl create ns auth-system
+</code></pre></div><h4 id=62-create-yaml-file-for-dex-deployment>6.2. Create YAML File for Dex Deployment</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cd
+mkdir auth-system
+cd auth-system
+
+vim dex-system.yml
+</code></pre></div><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>---
+<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>v1</span>
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>ServiceAccount</span>
+<span style=color:#f92672>metadata</span>:
+  <span style=color:#f92672>labels</span>:
+    <span style=color:#f92672>app</span>: <span style=color:#ae81ff>dex</span>
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>dex</span>
+  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>auth-system</span>
+---
+<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>rbac.authorization.k8s.io/v1</span>
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>ClusterRole</span>
+<span style=color:#f92672>metadata</span>:
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>dex</span>
+  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>auth-system</span>
+<span style=color:#f92672>rules</span>:
+- <span style=color:#f92672>apiGroups</span>: [<span style=color:#e6db74>&#34;dex.coreos.com&#34;</span>]
+  <span style=color:#f92672>resources</span>: [<span style=color:#e6db74>&#34;*&#34;</span>]
+  <span style=color:#f92672>verbs</span>: [<span style=color:#e6db74>&#34;*&#34;</span>]
+- <span style=color:#f92672>apiGroups</span>: [<span style=color:#e6db74>&#34;apiextensions.k8s.io&#34;</span>]
+  <span style=color:#f92672>resources</span>: [<span style=color:#e6db74>&#34;customresourcedefinitions&#34;</span>]
+  <span style=color:#f92672>verbs</span>: [<span style=color:#e6db74>&#34;create&#34;</span>]
+---
+<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>rbac.authorization.k8s.io/v1</span>
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>ClusterRoleBinding</span>
+<span style=color:#f92672>metadata</span>:
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>dex</span>
+  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>auth-system</span>
+<span style=color:#f92672>roleRef</span>:
+  <span style=color:#f92672>apiGroup</span>: <span style=color:#ae81ff>rbac.authorization.k8s.io</span>
+  <span style=color:#f92672>kind</span>: <span style=color:#ae81ff>ClusterRole</span>
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>dex</span>
+<span style=color:#f92672>subjects</span>:
+- <span style=color:#f92672>kind</span>: <span style=color:#ae81ff>ServiceAccount</span>
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>dex</span>
+  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>auth-system</span>
+
+---
+<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>v1</span>
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>ConfigMap</span>
+<span style=color:#f92672>metadata</span>:
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>dex</span>
+  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>auth-system</span>
+<span style=color:#f92672>data</span>:
+  <span style=color:#f92672>config.yaml</span>: |<span style=color:#e6db74>
+</span><span style=color:#e6db74>    issuer: https://dex.kubernetes.riupie.com
+</span><span style=color:#e6db74>    web:
+</span><span style=color:#e6db74>      http: 0.0.0.0:5556
+</span><span style=color:#e6db74>    frontend:
+</span><span style=color:#e6db74>      theme: custom
+</span><span style=color:#e6db74>    telemetry:
+</span><span style=color:#e6db74>      http: 0.0.0.0:5558
+</span><span style=color:#e6db74>    staticClients:
+</span><span style=color:#e6db74>    - id: oidc-auth-client
+</span><span style=color:#e6db74>      redirectURIs:
+</span><span style=color:#e6db74>      - &#39;https://kubectl.kubernetes.riupie.com/callback&#39;
+</span><span style=color:#e6db74>      - &#39;http://dashboard.kubernetes.riupie.com/oauth2/callback&#39;
+</span><span style=color:#e6db74>      name: &#39;oidc-auth-client&#39;
+</span><span style=color:#e6db74>      secret: XmT7EHo27skGchX0yLQNTYXibm3aNkx5
+</span><span style=color:#e6db74>    connectors:
+</span><span style=color:#e6db74>    - type: ldap
+</span><span style=color:#e6db74>      id: ldap
+</span><span style=color:#e6db74>      name: LDAP
+</span><span style=color:#e6db74>      config:
+</span><span style=color:#e6db74>        host: ldap.riupie.com:389
+</span><span style=color:#e6db74>        insecureNoSSL: true
+</span><span style=color:#e6db74>        insecureSkipVerify: true
+</span><span style=color:#e6db74>        bindDN: CN=admin,DC=riupie,DC=com
+</span><span style=color:#e6db74>        bindPW: mysecret #Add Administrator password
+</span><span style=color:#e6db74>        usernamePrompt: SSO Username
+</span><span style=color:#e6db74>        userSearch:
+</span><span style=color:#e6db74>          baseDN: OU=People,DC=riupie,DC=com
+</span><span style=color:#e6db74>          filter: &#34;(objectClass=person)&#34;
+</span><span style=color:#e6db74>          username: mail
+</span><span style=color:#e6db74>          idAttr: uid
+</span><span style=color:#e6db74>          emailAttr: mail
+</span><span style=color:#e6db74>          nameAttr: cn
+</span><span style=color:#e6db74>        groupSearch:
+</span><span style=color:#e6db74>          baseDN: OU=Groups,DC=riupie,DC=com
+</span><span style=color:#e6db74>          filter: &#34;(objectClass=groupOfNames)&#34;
+</span><span style=color:#e6db74>          userAttr: DN
+</span><span style=color:#e6db74>          groupAttr: member
+</span><span style=color:#e6db74>          nameAttr: cn
+</span><span style=color:#e6db74>    oauth2:
+</span><span style=color:#e6db74>      skipApprovalScreen: true
+</span><span style=color:#e6db74>    storage:
+</span><span style=color:#e6db74>      type: kubernetes
+</span><span style=color:#e6db74>      config:
+</span><span style=color:#e6db74>        inCluster: true</span>    
+---
+<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>apps/v1</span>
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Deployment</span>
+<span style=color:#f92672>metadata</span>:
+  <span style=color:#f92672>labels</span>:
+    <span style=color:#f92672>app</span>: <span style=color:#ae81ff>dex</span>
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>dex</span>
+  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>auth-system</span>
+<span style=color:#f92672>spec</span>:
+  <span style=color:#f92672>replicas</span>: <span style=color:#ae81ff>1</span>
+  <span style=color:#f92672>selector</span>:
+    <span style=color:#f92672>matchLabels</span>:
+      <span style=color:#f92672>app</span>: <span style=color:#ae81ff>dex</span>
+  <span style=color:#f92672>strategy</span>:
+    <span style=color:#f92672>rollingUpdate</span>:
+      <span style=color:#f92672>maxSurge</span>: <span style=color:#ae81ff>1</span>
+      <span style=color:#f92672>maxUnavailable</span>: <span style=color:#ae81ff>1</span>
+    <span style=color:#f92672>type</span>: <span style=color:#ae81ff>RollingUpdate</span>
+  <span style=color:#f92672>template</span>:
+    <span style=color:#f92672>metadata</span>:
+      <span style=color:#f92672>labels</span>:
+        <span style=color:#f92672>app</span>: <span style=color:#ae81ff>dex</span>
+        <span style=color:#f92672>revision</span>: <span style=color:#e6db74>&#34;1&#34;</span>
+    <span style=color:#f92672>spec</span>:
+      <span style=color:#f92672>initContainers</span>:
+      - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>dl-theme</span>
+        <span style=color:#f92672>image</span>: <span style=color:#ae81ff>alpine/git</span>
+        <span style=color:#f92672>command</span>:
+         - <span style=color:#ae81ff>git</span>
+         - <span style=color:#ae81ff>clone</span>
+         - <span style=color:#e6db74>&#34;https://github.com/sguyennet/dex-inkubate-branding.git&#34;</span>
+         - <span style=color:#ae81ff>/theme</span>
+        <span style=color:#f92672>volumeMounts</span>:
+        - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>theme</span>
+          <span style=color:#f92672>mountPath</span>: <span style=color:#ae81ff>/theme/</span>
+      <span style=color:#f92672>containers</span>:
+      - <span style=color:#f92672>command</span>:
+        - <span style=color:#ae81ff>/usr/local/bin/dex</span>
+        - <span style=color:#ae81ff>serve</span>
+        - <span style=color:#ae81ff>/etc/dex/cfg/config.yaml</span>
+        <span style=color:#f92672>image</span>: <span style=color:#ae81ff>quay.io/dexidp/dex:v2.24.0</span>
+        <span style=color:#f92672>imagePullPolicy</span>: <span style=color:#ae81ff>IfNotPresent</span>
+        <span style=color:#f92672>name</span>: <span style=color:#ae81ff>dex</span>
+        <span style=color:#f92672>ports</span>:
+        - <span style=color:#f92672>containerPort</span>: <span style=color:#ae81ff>5556</span>
+          <span style=color:#f92672>name</span>: <span style=color:#ae81ff>http</span>
+          <span style=color:#f92672>protocol</span>: <span style=color:#ae81ff>TCP</span>
+        <span style=color:#f92672>resources</span>: {}
+        <span style=color:#f92672>terminationMessagePath</span>: <span style=color:#ae81ff>/dev/termination-log</span>
+        <span style=color:#f92672>terminationMessagePolicy</span>: <span style=color:#ae81ff>File</span>
+        <span style=color:#f92672>volumeMounts</span>:
+        - <span style=color:#f92672>mountPath</span>: <span style=color:#ae81ff>/etc/dex/cfg</span>
+          <span style=color:#f92672>name</span>: <span style=color:#ae81ff>config</span>
+        - <span style=color:#f92672>mountPath</span>: <span style=color:#ae81ff>/web/themes/custom/</span>
+          <span style=color:#f92672>name</span>: <span style=color:#ae81ff>theme</span>
+      <span style=color:#f92672>dnsPolicy</span>: <span style=color:#ae81ff>ClusterFirst</span>
+      <span style=color:#f92672>serviceAccountName</span>: <span style=color:#ae81ff>dex</span>
+      <span style=color:#f92672>restartPolicy</span>: <span style=color:#ae81ff>Always</span>
+      <span style=color:#f92672>schedulerName</span>: <span style=color:#ae81ff>default-scheduler</span>
+      <span style=color:#f92672>securityContext</span>: {}
+      <span style=color:#f92672>terminationGracePeriodSeconds</span>: <span style=color:#ae81ff>30</span>
+      <span style=color:#f92672>volumes</span>:
+      - <span style=color:#f92672>configMap</span>:
+          <span style=color:#f92672>defaultMode</span>: <span style=color:#ae81ff>420</span>
+          <span style=color:#f92672>items</span>:
+          - <span style=color:#f92672>key</span>: <span style=color:#ae81ff>config.yaml</span>
+            <span style=color:#f92672>path</span>: <span style=color:#ae81ff>config.yaml</span>
+          <span style=color:#f92672>name</span>: <span style=color:#ae81ff>dex</span>
+        <span style=color:#f92672>name</span>: <span style=color:#ae81ff>config</span>
+      - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>theme</span>
+        <span style=color:#f92672>emptyDir</span>: {}
+---
+<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>v1</span>
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Service</span>
+<span style=color:#f92672>metadata</span>:
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>dex</span>
+  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>auth-system</span>
+<span style=color:#f92672>spec</span>:
+  <span style=color:#f92672>selector</span>:
+    <span style=color:#f92672>app</span>: <span style=color:#ae81ff>dex</span>
+  <span style=color:#f92672>ports</span>:
+  - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>dex</span>
+    <span style=color:#f92672>port</span>: <span style=color:#ae81ff>5556</span>
+    <span style=color:#f92672>protocol</span>: <span style=color:#ae81ff>TCP</span>
+    <span style=color:#f92672>targetPort</span>: <span style=color:#ae81ff>5556</span>
+---
+<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>networking.k8s.io/v1beta1</span>
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Ingress</span>
+<span style=color:#f92672>metadata</span>:
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>dex-ingress</span>
+  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>auth-system</span>
+  <span style=color:#f92672>annotations</span>:
+    <span style=color:#f92672>kubernetes.io/ingress.class</span>: <span style=color:#e6db74>&#34;nginx&#34;</span>
+    <span style=color:#f92672>cert-manager.io/cluster-issuer</span>: <span style=color:#e6db74>&#34;tls-ca-issuer&#34;</span>
+<span style=color:#75715e>#    nginx.ingress.kubernetes.io/ssl-redirect: &#34;false&#34;</span>
+    <span style=color:#f92672>ingress.kubernetes.io/force-ssl-redirect</span>: <span style=color:#e6db74>&#34;true&#34;</span>
+<span style=color:#f92672>spec</span>:
+  <span style=color:#f92672>tls</span>:
+  - <span style=color:#f92672>hosts</span>:
+    - <span style=color:#ae81ff>dex.kubernetes.riupie.com</span>
+    <span style=color:#f92672>secretName</span>: <span style=color:#ae81ff>dex</span>
+  <span style=color:#f92672>rules</span>:
+  - <span style=color:#f92672>host</span>: <span style=color:#ae81ff>dex.kubernetes.riupie.com</span>
+    <span style=color:#f92672>http</span>:
+      <span style=color:#f92672>paths</span>:
+      - <span style=color:#f92672>backend</span>:
+          <span style=color:#f92672>serviceName</span>: <span style=color:#ae81ff>dex</span>
+          <span style=color:#f92672>servicePort</span>: <span style=color:#ae81ff>5556</span>
+</code></pre></div><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>kubectl create -f dex-system.yml
+</code></pre></div><h4 id=63-verify-dex-deployment>6.3. Verify dex deployment.</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ubuntu@ag-k8s-master0:~/auth-system$ curl https://dex.kubernetes.riupie.com/.well-known/openid-configuration
+<span style=color:#f92672>{</span>
+  <span style=color:#e6db74>&#34;issuer&#34;</span>: <span style=color:#e6db74>&#34;https://dex.kubernetes.riupie.com&#34;</span>,
+  <span style=color:#e6db74>&#34;authorization_endpoint&#34;</span>: <span style=color:#e6db74>&#34;https://dex.kubernetes.riupie.com/auth&#34;</span>,
+  <span style=color:#e6db74>&#34;token_endpoint&#34;</span>: <span style=color:#e6db74>&#34;https://dex.kubernetes.riupie.com/token&#34;</span>,
+  <span style=color:#e6db74>&#34;jwks_uri&#34;</span>: <span style=color:#e6db74>&#34;https://dex.kubernetes.riupie.com/keys&#34;</span>,
+  <span style=color:#e6db74>&#34;userinfo_endpoint&#34;</span>: <span style=color:#e6db74>&#34;https://dex.kubernetes.riupie.com/userinfo&#34;</span>,
+  <span style=color:#e6db74>&#34;response_types_supported&#34;</span>: <span style=color:#f92672>[</span>
+    <span style=color:#e6db74>&#34;code&#34;</span>
+  <span style=color:#f92672>]</span>,
+  <span style=color:#e6db74>&#34;subject_types_supported&#34;</span>: <span style=color:#f92672>[</span>
+    <span style=color:#e6db74>&#34;public&#34;</span>
+  <span style=color:#f92672>]</span>,
+  <span style=color:#e6db74>&#34;id_token_signing_alg_values_supported&#34;</span>: <span style=color:#f92672>[</span>
+    <span style=color:#e6db74>&#34;RS256&#34;</span>
+  <span style=color:#f92672>]</span>,
+  <span style=color:#e6db74>&#34;scopes_supported&#34;</span>: <span style=color:#f92672>[</span>
+    <span style=color:#e6db74>&#34;openid&#34;</span>,
+    <span style=color:#e6db74>&#34;email&#34;</span>,
+    <span style=color:#e6db74>&#34;groups&#34;</span>,
+    <span style=color:#e6db74>&#34;profile&#34;</span>,
+    <span style=color:#e6db74>&#34;offline_access&#34;</span>
+  <span style=color:#f92672>]</span>,
+  <span style=color:#e6db74>&#34;token_endpoint_auth_methods_supported&#34;</span>: <span style=color:#f92672>[</span>
+    <span style=color:#e6db74>&#34;client_secret_basic&#34;</span>
+  <span style=color:#f92672>]</span>,
+  <span style=color:#e6db74>&#34;claims_supported&#34;</span>: <span style=color:#f92672>[</span>
+    <span style=color:#e6db74>&#34;aud&#34;</span>,
+    <span style=color:#e6db74>&#34;email&#34;</span>,
+    <span style=color:#e6db74>&#34;email_verified&#34;</span>,
+    <span style=color:#e6db74>&#34;exp&#34;</span>,
+    <span style=color:#e6db74>&#34;iat&#34;</span>,
+    <span style=color:#e6db74>&#34;iss&#34;</span>,
+    <span style=color:#e6db74>&#34;locale&#34;</span>,
+    <span style=color:#e6db74>&#34;name&#34;</span>,
+    <span style=color:#e6db74>&#34;sub&#34;</span>
+  <span style=color:#f92672>]</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><h4 id=64-configure-kubernetes-api>6.4. Configure Kubernetes API</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>vim /etc/kubernetes/manifests/kube-apiserver.yaml
+</code></pre></div><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>...
+<span style=color:#f92672>spec</span>:
+  <span style=color:#f92672>containers</span>:
+  - <span style=color:#f92672>command</span>:
+    - <span style=color:#ae81ff>kube-apiserver</span>
+    <span style=color:#ae81ff>....</span>
+    - --<span style=color:#ae81ff>oidc-issuer-url=https://dex.kubernetes.riupie.com</span>
+    - --<span style=color:#ae81ff>oidc-client-id=oidc-auth-client</span>
+    - --<span style=color:#ae81ff>oidc-username-claim=email</span>
+    - --<span style=color:#ae81ff>oidc-groups-claim=groups</span>
+...
+</code></pre></div><h4 id=65-wait-for-kube-api-pods-to-restart>6.5. Wait for kube-api pods to restart</h4><h3 id=7-deploy-gangway>7. Deploy Gangway</h3><h4 id=71-create-secret-key-for-gangway>7.1. Create secret key for Gangway</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>kubectl -n auth-system create secret generic gangway-key --from-literal<span style=color:#f92672>=</span>sesssionkey<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>openssl rand -base64 32<span style=color:#66d9ef>)</span>
+</code></pre></div><h4 id=72-create-gangway-yaml-deployment>7.2. Create Gangway YAML deployment</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cd
+cd auth-system
+
+vim gangway-system.yml
+</code></pre></div><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>---
+<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>v1</span>
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>ConfigMap</span>
+<span style=color:#f92672>metadata</span>:
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>gangway</span>
+  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>auth-system</span>
+<span style=color:#f92672>data</span>:
+  <span style=color:#f92672>gangway.yaml</span>: |<span style=color:#e6db74>
+</span><span style=color:#e6db74>    clusterName: &#34;kubernetes&#34;
+</span><span style=color:#e6db74>    apiServerURL: &#34;https://10.54.54.10:6443&#34;
+</span><span style=color:#e6db74>    authorizeURL: &#34;https://dex.kubernetes.riupie.com/auth&#34;
+</span><span style=color:#e6db74>    tokenURL: &#34;https://dex.kubernetes.riupie.com/token&#34;
+</span><span style=color:#e6db74>    clientID: &#34;oidc-auth-client&#34;
+</span><span style=color:#e6db74>    clientSecret: &#34;XmT7EHo27skGchX0yLQNTYXibm3aNkx5&#34;
+</span><span style=color:#e6db74>    redirectURL: &#34;https://kubectl.kubernetes.riupie.com/callback&#34;
+</span><span style=color:#e6db74>    scopes: [&#34;openid&#34;, &#34;profile&#34;, &#34;email&#34;,&#34;groups&#34;, &#34;offline_access&#34;]
+</span><span style=color:#e6db74>    usernameClaim: &#34;email&#34;
+</span><span style=color:#e6db74>    emailClaim: &#34;email&#34;
+</span><span style=color:#e6db74>    trustedCAPath: &#34;/cacerts/tls.crt&#34;</span>    
+---
+<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>apps/v1</span>
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Deployment</span>
+<span style=color:#f92672>metadata</span>:
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>gangway</span>
+  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>auth-system</span>
+  <span style=color:#f92672>labels</span>:
+    <span style=color:#f92672>app</span>: <span style=color:#ae81ff>gangway</span>
+<span style=color:#f92672>spec</span>:
+  <span style=color:#f92672>replicas</span>: <span style=color:#ae81ff>1</span>
+  <span style=color:#f92672>selector</span>:
+    <span style=color:#f92672>matchLabels</span>:
+      <span style=color:#f92672>app</span>: <span style=color:#ae81ff>gangway</span>
+  <span style=color:#f92672>strategy</span>:
+  <span style=color:#f92672>template</span>:
+    <span style=color:#f92672>metadata</span>:
+      <span style=color:#f92672>labels</span>:
+        <span style=color:#f92672>app</span>: <span style=color:#ae81ff>gangway</span>
+        <span style=color:#f92672>revision</span>: <span style=color:#e6db74>&#34;1&#34;</span>
+    <span style=color:#f92672>spec</span>:
+      <span style=color:#f92672>containers</span>:
+        - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>gangway</span>
+          <span style=color:#f92672>image</span>: <span style=color:#ae81ff>gcr.io/heptio-images/gangway:v3.2.0</span>
+          <span style=color:#f92672>imagePullPolicy</span>: <span style=color:#ae81ff>Always</span>
+          <span style=color:#f92672>command</span>: [<span style=color:#e6db74>&#34;gangway&#34;</span>, <span style=color:#e6db74>&#34;-config&#34;</span>, <span style=color:#e6db74>&#34;/gangway/gangway.yaml&#34;</span>]
+          <span style=color:#f92672>env</span>:
+            - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>GANGWAY_SESSION_SECURITY_KEY</span>
+              <span style=color:#f92672>valueFrom</span>:
+                <span style=color:#f92672>secretKeyRef</span>:
+                  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>gangway-key</span>
+                  <span style=color:#f92672>key</span>: <span style=color:#ae81ff>sesssionkey</span>
+          <span style=color:#f92672>ports</span>:
+            - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>http</span>
+              <span style=color:#f92672>containerPort</span>: <span style=color:#ae81ff>8080</span>
+              <span style=color:#f92672>protocol</span>: <span style=color:#ae81ff>TCP</span>
+          <span style=color:#f92672>resources</span>:
+            <span style=color:#f92672>requests</span>:
+              <span style=color:#f92672>cpu</span>: <span style=color:#e6db74>&#34;100m&#34;</span>
+              <span style=color:#f92672>memory</span>: <span style=color:#e6db74>&#34;100Mi&#34;</span>
+            <span style=color:#f92672>limits</span>:
+              <span style=color:#f92672>cpu</span>: <span style=color:#e6db74>&#34;100m&#34;</span>
+              <span style=color:#f92672>memory</span>: <span style=color:#e6db74>&#34;100Mi&#34;</span>
+          <span style=color:#f92672>volumeMounts</span>:
+            - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>gangway</span>
+              <span style=color:#f92672>mountPath</span>: <span style=color:#ae81ff>/gangway/</span>
+            - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>ca</span>
+              <span style=color:#f92672>mountPath</span>: <span style=color:#ae81ff>/cacerts/</span>
+          <span style=color:#f92672>livenessProbe</span>:
+            <span style=color:#f92672>httpGet</span>:
+              <span style=color:#f92672>path</span>: <span style=color:#ae81ff>/</span>
+              <span style=color:#f92672>port</span>: <span style=color:#ae81ff>8080</span>
+            <span style=color:#f92672>initialDelaySeconds</span>: <span style=color:#ae81ff>20</span>
+            <span style=color:#f92672>timeoutSeconds</span>: <span style=color:#ae81ff>1</span>
+            <span style=color:#f92672>periodSeconds</span>: <span style=color:#ae81ff>60</span>
+            <span style=color:#f92672>failureThreshold</span>: <span style=color:#ae81ff>3</span>
+          <span style=color:#f92672>readinessProbe</span>:
+            <span style=color:#f92672>httpGet</span>:
+              <span style=color:#f92672>path</span>: <span style=color:#ae81ff>/</span>
+              <span style=color:#f92672>port</span>: <span style=color:#ae81ff>8080</span>
+            <span style=color:#f92672>timeoutSeconds</span>: <span style=color:#ae81ff>1</span>
+            <span style=color:#f92672>periodSeconds</span>: <span style=color:#ae81ff>10</span>
+            <span style=color:#f92672>failureThreshold</span>: <span style=color:#ae81ff>3</span>
+      <span style=color:#f92672>volumes</span>:
+        - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>gangway</span>
+          <span style=color:#f92672>configMap</span>:
+            <span style=color:#f92672>name</span>: <span style=color:#ae81ff>gangway</span>
+        - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>ca</span>
+          <span style=color:#f92672>secret</span>:
+            <span style=color:#f92672>secretName</span>: <span style=color:#ae81ff>dex</span>
+---
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Service</span>
+<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>v1</span>
+<span style=color:#f92672>metadata</span>:
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>gangway-svc</span>
+  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>auth-system</span>
+  <span style=color:#f92672>labels</span>:
+    <span style=color:#f92672>app</span>: <span style=color:#ae81ff>gangway</span>
+<span style=color:#f92672>spec</span>:
+  <span style=color:#f92672>type</span>: <span style=color:#ae81ff>ClusterIP</span>
+  <span style=color:#f92672>ports</span>:
+    - <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;http&#34;</span>
+      <span style=color:#f92672>protocol</span>: <span style=color:#ae81ff>TCP</span>
+      <span style=color:#f92672>port</span>: <span style=color:#ae81ff>80</span>
+      <span style=color:#f92672>targetPort</span>: <span style=color:#e6db74>&#34;http&#34;</span>
+  <span style=color:#f92672>selector</span>:
+    <span style=color:#f92672>app</span>: <span style=color:#ae81ff>gangway</span>
+---
+<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>networking.k8s.io/v1beta1</span>
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Ingress</span>
+<span style=color:#f92672>metadata</span>:
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>gangway</span>
+  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>auth-system</span>
+  <span style=color:#f92672>annotations</span>:
+    <span style=color:#f92672>kubernetes.io/ingress.class</span>: <span style=color:#e6db74>&#34;nginx&#34;</span>
+    <span style=color:#f92672>cert-manager.io/cluster-issuer</span>: <span style=color:#e6db74>&#34;tls-ca-issuer&#34;</span>
+<span style=color:#75715e>#    nginx.ingress.kubernetes.io/ssl-redirect: &#34;true&#34;</span>
+    <span style=color:#f92672>nginx.ingress.kubernetes.io/force-ssl-redirect</span>: <span style=color:#e6db74>&#34;true&#34;</span>
+<span style=color:#f92672>spec</span>:
+  <span style=color:#f92672>tls</span>:
+  - <span style=color:#f92672>hosts</span>:
+    - <span style=color:#ae81ff>kubectl.kubernetes.riupie.com</span>
+    <span style=color:#f92672>secretName</span>: <span style=color:#ae81ff>gangway</span>
+  <span style=color:#f92672>rules</span>:
+  - <span style=color:#f92672>host</span>: <span style=color:#ae81ff>kubectl.kubernetes.riupie.com</span>
+    <span style=color:#f92672>http</span>:
+      <span style=color:#f92672>paths</span>:
+      - <span style=color:#f92672>backend</span>:
+          <span style=color:#f92672>serviceName</span>: <span style=color:#ae81ff>gangway-svc</span>
+          <span style=color:#f92672>servicePort</span>: <span style=color:#ae81ff>http</span>
+</code></pre></div><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>kubectl create -f gangway-system.yml
+</code></pre></div><h4 id=74-verify-dex-and-gangway-pods>7.4. Verify dex and gangway pods</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ubuntu@ag-k8s-master0:~$ kubectl get pods -n auth-system
+NAME                            READY   STATUS    RESTARTS   AGE
+dex-74fb858546-5jccf            1/1     Running   <span style=color:#ae81ff>0</span>          5d15h
+gangway-64b4788d5c-7tdcr        1/1     Running   <span style=color:#ae81ff>0</span>          5d15h
+</code></pre></div><h4 id=75-create-rbac-for-admins-group>7.5 Create RBAC for admins Group</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>vim rbac-admin.yml
+</code></pre></div><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>---
+<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>rbac.authorization.k8s.io/v1</span>
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>ClusterRoleBinding</span>
+<span style=color:#f92672>metadata</span>:
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>admin-user</span>
+<span style=color:#f92672>roleRef</span>:
+  <span style=color:#f92672>apiGroup</span>: <span style=color:#ae81ff>rbac.authorization.k8s.io</span>
+  <span style=color:#f92672>kind</span>: <span style=color:#ae81ff>ClusterRole</span>
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>cluster-admin</span>
+<span style=color:#f92672>subjects</span>:
+- <span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Group</span>
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>admins</span>
+</code></pre></div><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>kubectl create -f rbac-admins.yml
+</code></pre></div><h4 id=76-create-rbac-for-developers-group>7.6. Create RBAC for developers Group</h4><p>LDAP users in group developers only have read access.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>vim rbac-dev.yml
+</code></pre></div><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>---
+<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>rbac.authorization.k8s.io/v1</span>
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>ClusterRoleBinding</span>
+<span style=color:#f92672>metadata</span>:
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>dev-user</span>
+<span style=color:#f92672>roleRef</span>:
+  <span style=color:#f92672>apiGroup</span>: <span style=color:#ae81ff>rbac.authorization.k8s.io</span>
+  <span style=color:#f92672>kind</span>: <span style=color:#ae81ff>ClusterRole</span>
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>view</span>
+<span style=color:#f92672>subjects</span>:
+- <span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Group</span>
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>developers</span>
+</code></pre></div><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>kubectl create -f rbac-dev.yml
+</code></pre></div><h4 id=77-accesing-gangway>7.7. Accesing Gangway</h4><p>Access to <a href=https://kubectl.kubernetes.riupie.com>https://kubectl.kubernetes.riupie.com</a> then login using johndoe user.
+<img src=imgs/gangway-1.png alt=gangway-1>
+<img src=imgs/gangway-2.png alt=gangway-2>
+<img src=imgs/gangway-3.png alt=gangway-3></p></div></div><div class="d-flex flex-row justify-content-center"><h3 class="mb-1 mt-1 text-left mr-4"><a href=/blog/deploying-openstack-hci/ title="Deploying HCI Openstack using Kolla Ansible"><i class="nav-menu fas fa-chevron-circle-left"></i></a></h3><h3 class="mb-1 mt-1 text-left ml-4"><i class="nav-menu-disabled fas fa-chevron-circle-right"></i></h3></div></main><footer class="mt-2 mb-4 text-center"><span class=markdownify>2021</span>
+<span>&#183;
+<i><a href=https://rahmatawe.com>Riupie</a></i></span></footer></body></html>
