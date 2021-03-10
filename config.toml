@@ -95,7 +95,7 @@ series = "series"
             position = "Cloud Engineer"
             dates = "2019 - 2020"
             company = "PT. Boer Technology"
-            details = "Research and implement IT infrastructure on-premise using open source and cloud native technology such as Openstack, Kubernetes, Docker, etc. "
+#            details = "Research and implement IT infrastructure on-premise using open source and cloud native technology such as Openstack, Kubernetes, Docker, etc. "
 #        [[params.experience.list]]
 #            position = "Trainer"
 #            dates = "2019 - *Present*"
@@ -105,7 +105,7 @@ series = "series"
             position = "IT Support"
             dates = "2018 - 2019"
             company = "Merapi Online"
-            details = "Configure and maintain networking devices such as Mikrotik, Ubiquiti and NAS Server (Synology)"
+#            details = "Configure and maintain networking devices such as Mikrotik, Ubiquiti and NAS Server (Synology)"
     # Education section
     [params.education]
         title = "Education"
