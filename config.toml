@@ -79,7 +79,7 @@ series = "series"
     [params.aboutme]
         title = "About Me"
         icon = "fas fa-user"
-        description = "An IT Enthusiast interested in cloud computing, devops and security. I am working as cloud engineer and usually deploy Openstack, Kubernetes, Openshift and other devops related infrastructure. Love linux and cat. :) "
+        description = "An IT Enthusiast interested in cloud computing, devops and security. Love automation and still trying to love coding. "
 
     # Experience section
     [params.experience]
