@@ -35,7 +35,7 @@ series = "series"
     # Profile section
     [params.profile]
         name = "Rahmat Agung Wibowo"
-		tagline = "Cloud Engineer"
+		tagline = "SRE"
 		location = "Jakarta, Indonesia"
         photo = "profile.jpg"
 
@@ -85,6 +85,11 @@ series = "series"
     [params.experience]
         title = "Experiences"
         icon = "fas fa-briefcase"
+
+        [[params.experience.list]]
+            position = "SRE"
+            dates = "2021 - present"
+            company = "GDP Labs"
 
         [[params.experience.list]]
             position = "Cloud Engineer"
