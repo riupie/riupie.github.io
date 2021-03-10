@@ -71,8 +71,8 @@ series = "series"
         item = "publication"
     [[params.showInAccordion]]
         item = "project"
-    [[params.showInAccordion]]
-        item = "skill"
+#    [[params.showInAccordion]]
+#        item = "skill"
     [[params.showInAccordion]]
         item = "hobby"
 
