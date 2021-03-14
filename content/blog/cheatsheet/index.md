@@ -1,7 +1,7 @@
 ---
 draft: false
 resources: []
-title: Cheatsheet
+title: cheatsheet
 date: '2021-03-01'
 categories:
   - Cheatsheet
@@ -20,19 +20,13 @@ $ sudo docker run --rm -it -v ${PWD}:/app -w /app openjdk:11-jdk-slim /bin/sh -c
 ##### Rsync over SSH on Spesific Port
 
 ```bash
-$ rsync -avzhe 'ssh -p [port_number]' -P [source]:/path/to/file [destination]:/path/to/file
+$ rsync -avzhe 'ssh -p [port_number]' -P [user@remote_ip]:/path/to/file/source /path/to/file/destination
 ```
    
 ##### Scan IP on Network
 
 ```bash
 $ nmap -sP [ip_address/prefix]
-```
-   
-##### Copy Public Key to Other Server
-
-```bash
-$ ssh-copy-id [usernmae]@[remote_server]
 ```
    
 ##### Search Available Version of Spesific Package on Debian Based OS
