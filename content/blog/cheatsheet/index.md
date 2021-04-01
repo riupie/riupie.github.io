@@ -4,7 +4,7 @@ resources: []
 title: cheatsheet
 date: '2021-03-01'
 categories:
-  - Cheatsheet
+  - cheatsheet
 description: Command Cheatsheet Collection
 series: []
 tags:
@@ -52,5 +52,10 @@ iptables -I INPUT 5 -p tcp -m state --state NEW -m tcp --dport 9100 -j ACCEPT
 
 ```bash
 sed -i 's/old-string/new-string/g'
+```
+
+##### Find and copy files
+```bash
+find /var/cache/dnf -iname "*.rpm" -exec cp {} packages/ \;
 ```
 ---
