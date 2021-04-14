@@ -58,4 +58,9 @@ sed -i 's/old-string/new-string/g'
 ```bash
 find /var/cache/dnf -iname "*.rpm" -exec cp {} packages/ \;
 ```
+
+##### Encrypt secret envar value using Google KMS
+```
+echo -n "This is my secret" | gcloud kms encrypt --plaintext-file=- --ciphertext-file=- --location=global --keyring=mykeyring --key=myappkey | base64 -w 0
+```
 ---
