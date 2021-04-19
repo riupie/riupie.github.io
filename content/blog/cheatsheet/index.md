@@ -60,7 +60,18 @@ find /var/cache/dnf -iname "*.rpm" -exec cp {} packages/ \;
 ```
 
 ##### Encrypt secret envar value using Google KMS
-```
+```bash
 echo -n "This is my secret" | gcloud kms encrypt --plaintext-file=- --ciphertext-file=- --location=global --keyring=mykeyring --key=myappkey | base64 -w 0
 ```
+
+##### Encrypt file using Google KMS
+```bash
+gcloud kms encrypt \
+    --key myappkey \
+    --keyring mykeyring \
+    --location global  \
+    --plaintext-file application.properties \
+    --ciphertext-file application.properties.enc
+```
+
 ---
