@@ -73,5 +73,22 @@ gcloud kms encrypt \
     --plaintext-file application.properties \
     --ciphertext-file application.properties.enc
 ```
+##### Check DNS record
+```bash
+$ dig +noall +answer google.com
 
+google.com.		204	IN	A	74.125.24.102
+google.com.		204	IN	A	74.125.24.138
+google.com.		204	IN	A	74.125.24.139
+google.com.		204	IN	A	74.125.24.101
+google.com.		204	IN	A	74.125.24.100
+google.com.		204	IN	A	74.125.24.113
+```
+
+##### Check service port
+```bash
+$ getent services 53
+
+domain                53/tcp
+```
 ---
