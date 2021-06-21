@@ -95,5 +95,9 @@ domain                53/tcp
 ```bash
 docker container stop $(docker container ls -aq) && docker system prune -af --volumes
 ```
-
+##### Troubleshoot SELinux Issue on RHEL/CentOS
+```bash
+1. Find your error from journalctl or audit.log then get the audit ID.
+2. grep 1624284378.419:2066 /var/log/audit/audit.log |audit2why
+```
 ---
