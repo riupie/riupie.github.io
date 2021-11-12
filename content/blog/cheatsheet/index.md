@@ -100,4 +100,9 @@ docker container stop $(docker container ls -aq) && docker system prune -af --vo
 1. Find your error from journalctl or audit.log then get the audit ID.
 2. grep 1624284378.419:2066 /var/log/audit/audit.log |audit2why
 ```
+
+##### Replace multiple file on OSX
+```bash
+find /to/my/path -type f -name "*.yaml" -exec sed -i '' -e 's/halo.com/hai.id/g' {} \;
+```
 ---
