@@ -200,9 +200,10 @@ Open grafana URL on 10.54.54.6:3000 then add Loki as datasource.
 ### 1. Download promtail binary
 To collect log from vent Viewer on Windows Server, we need to setup promtail. Binary file can be downloaded in [here](https://github.com/grafana/loki/releases/download/v2.5.0/promtail-windows-amd64.exe.zip). Move the exctracted file to `C:\Program Files\promtail`, see below for detail.
 ![Promtail Directory](imgs/promtail-dir.png)
+For new installation, it should be contain only the binary file `promtail-windows-amd64.exe`.
 
 ### 2. Create promtail configuration
-For new installation, it should be contain only the binary file `promtail-windows-amd64.exe`. Then, create promtail configuration `promtail-local-config.yaml` with following content.
+Create promtail configuration file `promtail-local-config.yaml` with following content.
 ```yaml
 server:
   http_listen_port: 9080
@@ -277,14 +278,15 @@ Test the configuration by running promtail directly via Powershell. Use Ctrl+C t
 ```
 
 ### 4. Run promtail using windows service wrapper.
-There are some service wrapper on Windows (sc.exe, nssm.exe and winsw). Windows has built in service wrapper: sc.exe, but when I use `sc.exe` to run promtail it always error: `StartService FAILED 1053`. I'm not really familiar with Windows Server, so still figuring out why this error appear. So, I use [nssm](https://nssm.cc/download) to wrap my promtail. You only need to download it and run below command.
+There are some service wrapper on Windows, for example: sc.exe, nssm.exe and winsw. Windows has built in service wrapper: sc.exe, but when I use `sc.exe` to run promtail it always return error: `StartService FAILED 1053`. I'm not really familiar with Windows Server, so still figuring out why this error appear. So, I use [nssm](https://nssm.cc/download) to wrap my promtail. You only need to download, unzip it and run below command.
 ```bash
 .\nssm.exe install promtail
 ```
 Boom, GUI windows will appear. Set the setting like below.
 ![nssm GUI](imgs/nssm-config.png)
+You can also bypass the GUI, with `.\nssm install <servicename> <application> [<options>]`.
 
-Confiure log file.
+After service created, configure log file.
 ```bash
 .\nssm.exe set promtail AppStderr 'C:\Program Files\promtail\promtail-error.log'
 .\nssm.exe set promtail AppStdout 'C:\Program Files\promtail\promtail.log'
