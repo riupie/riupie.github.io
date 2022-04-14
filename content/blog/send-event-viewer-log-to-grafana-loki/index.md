@@ -1,11 +1,11 @@
 ---
 draft: false
 resources: []
-title: Setup Grafana Loki to retrieve log from Windows Server 2019
+title: Send Log from Event Viewer on Windows Server 2019 to Grafana Loki
 date: '2022-04-14'
 categories:
   - devops
-description: Setup Grafana Loki to retrieve log from Windows Server 2019
+description: Send Log from Event Viewer on Windows Server 2019 to Grafana Loki
 series: []
 tags:
   - linux
