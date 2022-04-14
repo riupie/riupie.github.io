@@ -14,6 +14,7 @@ tags:
 
 
 ## Environment
+![Loki Diagram](imgs/loki-diagram.png)
 ```
 # Servers
 ag-rh2 : 10.54.54.6 (Grafana + Loki)
@@ -304,5 +305,6 @@ References:
 [Log Scrapping made Easy with Grafana Loki in Windows](https://reachmnadeem.wordpress.com/2020/12/30/log-scrapping-made-easy-with-grafana-loki-in-windows/)
 
 [Promtail Scraping (Service Discovery)](https://grafana.com/docs/loki/latest/clients/promtail/scraping/#windows-event-log)
-[Stages](https://grafana.com/docs/loki/latest/clients/promtail/stages/)
 
+[Stages](https://grafana.com/docs/loki/latest/clients/promtail/stages/)
+---
