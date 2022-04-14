@@ -278,3 +278,10 @@ Then, start the service.
 
 ### 5. Open Grafana to check incoming logs
 ![grafana loki logs](imgs/loki-query.png)
+
+References:
+
+[Grafana Loki Storage Retention](https://grafana.com/docs/loki/latest/operations/storage/retention/)
+[LOG SCRAPPING MADE EASY WITH GRAFANA LOKI IN WINDOWS](https://reachmnadeem.wordpress.com/2020/12/30/log-scrapping-made-easy-with-grafana-loki-in-windows/)
+[Promtail Scraping (Service Discovery)](https://grafana.com/docs/loki/latest/clients/promtail/scraping/#windows-event-log)
+
