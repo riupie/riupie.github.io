@@ -307,4 +307,3 @@ References:
 [Promtail Scraping (Service Discovery)](https://grafana.com/docs/loki/latest/clients/promtail/scraping/#windows-event-log)
 
 [Stages](https://grafana.com/docs/loki/latest/clients/promtail/stages/)
----
