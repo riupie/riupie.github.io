@@ -279,7 +279,7 @@ Test the configuration by running promtail directly via Powershell. Use Ctrl+C t
 ### 4. Run promtail using windows service wrapper.
 There are some service wrapper on Windows (sc.exe, nssm.exe and winsw). Windows has built in service wrapper: sc.exe, but when I use `sc.exe` to run promtail it always error: `StartService FAILED 1053`. I'm not really familiar with Windows Server, so still figuring out why this error appear. So, I use [nssm](https://nssm.cc/download) to wrap my promtail. You only need to download it and run below command.
 ```bash
-'\nssm.exe install promtail
+.\nssm.exe install promtail
 ```
 Boom, GUI windows will appear. Set the setting like below.
 ![nssm GUI](imgs/nssm-config.png)
