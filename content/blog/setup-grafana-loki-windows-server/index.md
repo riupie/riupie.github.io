@@ -214,7 +214,7 @@ scrape_configs:
   - job_name: windows-application
     windows_events: 
       eventlog_name: "Application"
-      xpath_query: "*[System[Level <= 3]]" # Critical, Error, Warning
+      xpath_query: "*[System[(Level=1 or Level=2 or Level=3)]]" # Critical, Error, Warning
       labels:
         logsource: windows-eventlog
       use_incoming_timestamp: true
@@ -226,7 +226,7 @@ scrape_configs:
   - job_name: windows-security
     windows_events: 
       eventlog_name: "Security"
-      xpath_query: "*[System[Level <= 3]]"
+      xpath_query: "*[System[(Level=1 or Level=2 or Level=3)]]"
       labels:
         logsource: windows-eventlog
       use_incoming_timestamp: true
@@ -239,7 +239,7 @@ scrape_configs:
   - job_name: windows-system
     windows_events: 
       eventlog_name: "System"
-      xpath_query: "*[System[Level <= 3]]"
+      xpath_query: "*[System[(Level=1 or Level=2 or Level=3)]]"
       labels:
         logsource: windows-eventlog
       use_incoming_timestamp: true
