@@ -230,7 +230,7 @@ scrape_configs:
       labels:
         logsource: windows-eventlog
       use_incoming_timestamp: true
-      bookmark_path: "./bookmark-system.xml"
+      bookmark_path: "./bookmark-security.xml"
       exclude_event_data: true
       exclude_user_data: true
     relabel_configs:
