@@ -165,7 +165,7 @@ Then, run loki service.
 sudo systemctl enable --now loki.service
 ```
 
-### Open port for loki service
+### 7. Open port for loki service
 ```bash
 sudo firewall-cmd --add-port 3100/tcp --permanent
 sudo firewall-cmd --reload
