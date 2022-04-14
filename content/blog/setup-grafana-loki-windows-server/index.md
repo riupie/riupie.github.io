@@ -220,6 +220,12 @@ scrape_configs:
       use_incoming_timestamp: true
       bookmark_path: "./bookmark-application.xml"
       exclude_event_data: true
+    pipeline_stages:
+    - json:
+        expressions:
+          level: levelText
+    - labels: 
+        level:
     relabel_configs:
       - source_labels: ['computer']
         target_label: 'host'
@@ -233,6 +239,12 @@ scrape_configs:
       bookmark_path: "./bookmark-security.xml"
       exclude_event_data: true
       exclude_user_data: true
+    pipeline_stages:
+    - json:
+        expressions:
+          level: levelText
+    - labels: 
+        level:
     relabel_configs:
       - source_labels: ['computer']
         target_label: 'host'
@@ -246,6 +258,12 @@ scrape_configs:
       bookmark_path: "./bookmark-system.xml"
       exclude_event_data: true
       exclude_user_data: true
+    pipeline_stages:
+    - json:
+        expressions:
+          level: levelText
+    - labels: 
+        level:
     relabel_configs:
       - source_labels: ['computer']
         target_label: 'host'
@@ -286,4 +304,5 @@ References:
 [Log Scrapping made Easy with Grafana Loki in Windows](https://reachmnadeem.wordpress.com/2020/12/30/log-scrapping-made-easy-with-grafana-loki-in-windows/)
 
 [Promtail Scraping (Service Discovery)](https://grafana.com/docs/loki/latest/clients/promtail/scraping/#windows-event-log)
+[Stages](https://grafana.com/docs/loki/latest/clients/promtail/stages/)
 
