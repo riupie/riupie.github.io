@@ -2,7 +2,7 @@
 draft: false
 resources: []
 title: Setup Grafana Loki to retrieve log from Windows Server 2019
-date: '2022-04-15'
+date: '2022-04-14'
 categories:
   - devops
 description: Setup Grafana Loki to retrieve log from Windows Server 2019
