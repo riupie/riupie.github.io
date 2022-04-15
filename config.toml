@@ -107,16 +107,16 @@ series = "series"
             company = "Merapi Online"
 #            details = "Configure and maintain networking devices such as Mikrotik, Ubiquiti and NAS Server (Synology)"
     # Education section
-    [params.education]
-        title = "Education"
-        icon = "fas fa-graduation-cap"
+    #[params.education]
+    #    title = "Education"
+    #    icon = "fas fa-graduation-cap"
 
-        [[params.education.list]]
-            degree = "Bachelor of Applied Science (BAS) in Networking Technology"
-            college = "Universitas Gadjah Mada"
-            dates = "2014 - 2019"
-            thesis_title = "Analysis and Management of Honeypot Log on an Infrastructure as a Service (IaaS) using Elastic Stack"
-            thesis_link = "http://etd.repository.ugm.ac.id/penelitian/detail/174658"
+    #    [[params.education.list]]
+    #        degree = "Bachelor of Applied Science (BAS) in Networking Technology"
+    #        college = "Universitas Gadjah Mada"
+    #        dates = "2014 - 2019"
+    #        thesis_title = "Analysis and Management of Honeypot Log on an Infrastructure as a Service (IaaS) using Elastic Stack"
+    #        thesis_link = "http://etd.repository.ugm.ac.id/penelitian/detail/174658"
 
 #    # Publication section
 #    [params.publication]

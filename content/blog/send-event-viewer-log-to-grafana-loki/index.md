@@ -2,7 +2,7 @@
 draft: false
 resources: []
 title: Send Log from Event Viewer on Windows Server 2019 to Grafana Loki
-date: '2022-04-14'
+date: '2022-04-15'
 categories:
   - devops
 description: Send Log from Event Viewer on Windows Server 2019 to Grafana Loki
