@@ -105,4 +105,14 @@ docker container stop $(docker container ls -aq) && docker system prune -af --vo
 ```bash
 find /to/my/path -type f -name "*.yaml" -exec sed -i '' -e 's/halo.com/hai.id/g' {} \;
 ```
+
+##### Generate Kubernetes secret and configmap YAML manifest
+```bash
+# Secret
+kubectl create secret generic my-config --from-file=configuration/ -o yaml --dry-run
+
+# Configmap
+kubectl create configmap my-config --from-file=configuration/ -o yaml --dry-run
+```
+
 ---
