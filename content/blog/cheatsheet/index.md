@@ -115,4 +115,8 @@ kubectl create secret generic my-config --from-file=configuration/ -o yaml --dry
 kubectl create configmap my-config --from-file=configuration/ -o yaml --dry-run
 ```
 
+##### Generate docker credential secret for Kubernetes
+```
+kubectl create -n registry secret docker-registry registry-auth-dockerconfig-secret --docker-server=registry.rahmatawe.com --docker-username=[YOUR_USERNAME] --docker-password=[YOUR_REGISTRY_PASSWORD] --dry-run=client -oyaml
+```
 ---
