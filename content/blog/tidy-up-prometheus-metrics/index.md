@@ -4,11 +4,10 @@ resources: []
 title: Tidy up our Prometheus metrics!
 date: '2023-11-26'
 categories:
-  - linux
+  - devops
 description: Tuning Grafana stack configuration to reduce resource usage and lower cardinality
 series: []
-tags:
-  - linux
+tags: ['monitoring','prometheus']
 
 ---
 In this article I'll explain my process of analyzing and setting up Prometheus, where I ~~maybe effectively~~ increase query performance and addressed challenges related to cardinality. FYI, I use this stack on my monitoring system: Grafana, Promethues, Thanos. The metrics itself gethered from several source: node exporter, kube-state-metrics, etc.
