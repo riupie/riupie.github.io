@@ -25,12 +25,12 @@ $ mimirtool analyze grafana --address=https://grafana.rahmatawe.com --key="glsa_
 Anw, you can get `GRAFANA_API_TOKEN` by creating service account on Grafana dashboard.
 ![image](imgs/grafana-service-account.png)
 
-Above command will generate file named `metrics-in-grafana.json`. Using this file, we will compare it to metrics stored in Prometheus. Then use below command to generate list of metrics that being used and unused.
+Above command will generate file named `metrics-in-grafana.json`. Using this file, we will compare it to metrics stored in Prometheus.
 ```bash
 #port forward to prometheus
 $ kubectl port-forward prometheus-prometheus-0 9090:9090 -n monitoring
 
-# Compare grafana metrics and
+# Compare grafana metrics and prometheus
 $ mimirtool analyze prometheus --grafana-metrics-file="metrics-in-grafana.json" --address=http://localhost:9090
 
 INFO[0002] 73815 active series are being used in dashboards
@@ -80,3 +80,7 @@ metadata:
 ```
 
 That's it. Simple task to drop your bloated Prometheus metrics. Bye!
+
+Ref:
+* https://medium.com/@dotdc/prometheus-performance-and-cardinality-in-practice-74d5d9cd6230
+* https://www.robustperception.io/dropping-metrics-at-scrape-time-with-prometheus/
