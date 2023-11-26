@@ -12,7 +12,7 @@ series = "series"
     title = "RahmatAwe"
     author = "Rahmat Agung Wibowo"
     description = "Living, Working, Sleeping"
-    copyright = "2021"
+    copyright = "2023"
 
     [params.theme]
         # Available themes are 'light', 'dark', and 'pinkish'
