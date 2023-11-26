@@ -87,8 +87,13 @@ series = "series"
         icon = "fas fa-briefcase"
 
         [[params.experience.list]]
-            position = "SRE"
-            dates = "2021 - present"
+            position = "Site Reliability Engineer"
+            dates = "2023 - present"
+            company = "Pintu Kemana Saja"
+
+        [[params.experience.list]]
+            position = "Site Reliability Engineer"
+            dates = "2021 - 2022"
             company = "GDP Labs"
 
         [[params.experience.list]]
