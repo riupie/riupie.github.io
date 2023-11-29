@@ -1,0 +1,111 @@
+baseURL: https://www.rahmatawe.com/
+languageCode: en-us
+theme: aafu
+taxonomies:
+  category: categories
+  tag: tags
+  series: series
+params:
+  title: RahmatAwe
+  author: Rahmat Agung Wibowo
+  description: Living, Working, Sleeping
+  copyright: "2023"
+  theme:
+    mainTheme: light
+    showAttribute: true
+    singlePage: false
+  favicons:
+    use: true
+    metas: >
+      <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+      <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+      <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+      <link rel="manifest" href="site.webmanifest">
+      <link rel="mask-icon" href="safari-pinned-tab.svg" color="#252627">
+      <link rel="shortcut icon" href="favicon.ico">
+  profile:
+    name: Rahmat Agung Wibowo
+    tagline: SRE
+    location: Jakarta, Indonesia
+    photo: profile.jpg
+  social:
+    title: Links
+    list:
+      - class: fab
+        icon: fa-linkedin-in
+        url: https://www.linkedin.com/in/rahmataw/
+        title: LinkedIn
+      - class: fab
+        icon: fa-github
+        url: https://github.com/riupie
+        title: GitHub
+      - class: fas
+        icon: fa-envelope
+        url: mailto:rahmataw96@gmail.com
+        title: Email
+  showInAccordion:
+    - item: aboutme
+      expand: true
+    - item: experience
+    - item: education
+    - item: publication
+    - item: project
+    - item: hobby
+  aboutme:
+    title: About Me
+    icon: fas fa-user
+    description: 'An IT Enthusiast interested in cloud computing, devops and security. Love automation and still trying to love coding. '
+  experience:
+    title: Experiences
+    icon: fas fa-briefcase
+    list:
+      - position: Site Reliability Engineer
+        dates: 2023 - present
+        company: Pintu Kemana Saja
+      - position: Site Reliability Engineer
+        dates: 2021 - 2022
+        company: GDP Labs
+      - position: Cloud Engineer
+        dates: 2019 - 2020
+        company: PT. Boer Technology
+      - position: IT Support
+        dates: 2018 - 2019
+        company: Merapi Online
+  skill:
+    title: Skills
+    panelId: skill-panel
+    icon: fas fa-cogs
+    list:
+      - skill: Linux Administration
+        skillrating: 80
+      - skill: Openstack
+        skillrating: 75
+      - skill: Kubernetes
+        skillrating: 70
+      - skill: Networking
+        skillrating: 65
+  hobby:
+    title: Hobbies
+    icon: fas fa-gamepad
+    list:
+      - hobby: Reading
+      - hobby: Gaming
+      - hobby: Travelling
+markup:
+  goldmark:
+    extensions:
+      definitionList: true
+      footnote: true
+      linkify: true
+      strikethrough: true
+      table: true
+      taskList: true
+      typographer: true
+    parser:
+      attribute: true
+      autoHeadingID: true
+      autoHeadingIDType: github
+    renderer:
+      hardWraps: false
+      unsafe: true
+      xhtml: false

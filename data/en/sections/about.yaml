@@ -1,0 +1,50 @@
+# section information
+section:
+  name: About
+  id: about
+  enable: true
+  weight: 1
+  showOnNavbar: true
+  template: sections/about.html
+
+# your designation
+designation: Site Reliability Engineer
+# your company information
+company:
+  name: Pintu
+  url: "https://pintu.co.id"
+
+# your resume. this file path should be relative to you "static" directory
+#resume: "files/resume.pdf"
+
+# a summary about you
+summary: 'An IT Enthusiast interested in cloud computing, devops and security. Love automation and still trying to love coding.'
+
+# your social links
+# give as many as you want. use font-awesome for the icons.
+socialLinks:
+- name: Email
+  icon: "fas fa-envelope"
+  url: "rahmataw96@gmail.com"
+- name: LinkedIn
+  icon: "fab fa-linkedin"
+  url: "https://www.linkedin.com/in/rahmataw/"
+- name: Github
+  icon: "fab fa-github"
+  url: "https://www.github.com/riupie"
+
+badges:
+- type: certification
+  name: Certified Kubernetes Administrator
+  url: "https://www.credly.com/badges/37ce88d4-174b-429c-ba06-5007b3ebf0f5"
+  badge: "https://images.credly.com/size/680x680/images/8b8ed108-e77d-4396-ac59-2504583b9d54/cka_from_cncfsite__281_29.png"
+
+- type: certification
+  name: AWS Certified Solutions Architect – Associate
+  url: "https://www.credly.com/badges/6244cad7-6a26-4f50-beba-c2145545958f"
+  badge: "https://images.credly.com/size/680x680/images/0e284c3f-5164-4b21-8660-0d84737941bc/image.png"
+
+- type: certification
+  name: Red Hat Certified System Administrator
+  url: "https://www.credly.com/badges/181b45a3-d420-4d65-abcf-330fd1944b82"
+  badge: "https://images.credly.com/size/680x680/images/572de0ba-2c59-4816-a59d-b0e1687e45ee/image.png"
