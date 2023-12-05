@@ -1,0 +1,53 @@
+# section information
+section:
+  name: Experiences
+  id: experiences
+  enable: true
+  weight: 3
+  showOnNavbar: true
+  # Can optionally hide the title in sections
+  # hideTitle: true 
+
+# Your experiences
+experiences:
+- company:
+    name: Pintu Kemana Saja
+    url: "https://pintu.co.id"
+    location: Jakarta
+    overview: Pintu is a mobile first digital asset (blockchain based) platform that offers customers the opportunity to safely buy, sell, manage, and utilize their blockchain based assets.
+  positions:
+  - designation: Site Reliability Engineer
+    start: Jan 2022
+
+- company:
+    name: GDP Labs
+    url: "https://www.example.com"
+    location: Jakarta
+    overview: GDP Labs is a software product development-centric organization based in Indonesia.
+  positions:    
+  - designation: Senior Site Reliability Engineer
+    start: Apr 2022
+    end: Dec 2022
+  - designation: Site Reliability Engineer
+    start: Mar 2021
+    end: Apr 2022
+    responsibilities:
+    - Automate infrastructure provisioning on public cloud (GCP, AWS) using terraform
+    - Automate boring tasks using Ansible
+    - Support application development (Java, NodeJS, Python) using some CI/CD tools and platform such as Codeship/GCB/Buddy Works/Jenkins, Docker, Kubernetes, etc.
+
+- company:
+    name: Boer Technology
+    url: "https://btech.id"
+    location: Bogor
+    overview: Enterprise Cloud System Integrator and Tech Professional Solutions.
+  positions:
+  - designation: Cloud Engineer
+    start: Mar 2019
+    end: Dec 2020
+    responsibilities:
+    - Deploy and maintain Linux based OS such as Ubuntu Server and CentOS on customer site. 
+    - Deploy and maintain Openstack cluster on customer site.
+    - Develop content and material for Devops training.
+    - Collaborate with Ops team to plan and develop technology and architecture which will be implemented on customer site. 
+    - Collaborate with other teams on testing Open Source and Cloud Native related technology.
