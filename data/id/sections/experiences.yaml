@@ -32,9 +32,12 @@ experiences:
     start: Mar 2021
     end: Apr 2022
     responsibilities:
-    - Automate infrastructure provisioning on public cloud (GCP, AWS) using terraform
-    - Automate boring tasks using Ansible
-    - Support application development (Java, NodeJS, Python) using some CI/CD tools and platform such as Codeship/GCB/Buddy Works/Jenkins, Docker, Kubernetes, etc.
+    - Mengotomasi pembuatan infrastruktur di public cloud (GCP, AWS) menggunakan terraform
+    - Mengotomasi tasks menggunakan Ansible
+    - Membantu pengembangan aplikasi (Java, NodeJS, Python) menggunakan beberapa tool CI/CD seperti Codeship/GCB/Buddy Works/Jenkins dan lain-lain.
+    - Membuat desain infrastruktur untuk aplikasi yang akan di implementasikan di klien.
+    - Merancang, membuat dan mengelola cluster Kubernetes on-premise menggunakan Kubespray
+
 
 - company:
     name: Boer Technology
@@ -46,8 +49,7 @@ experiences:
     start: Mar 2019
     end: Dec 2020
     responsibilities:
-    - Deploy and maintain Linux based OS such as Ubuntu Server and CentOS on customer site. 
-    - Deploy and maintain Openstack cluster on customer site.
-    - Develop content and material for Devops training.
-    - Collaborate with Ops team to plan and develop technology and architecture which will be implemented on customer site. 
-    - Collaborate with other teams on testing Open Source and Cloud Native related technology.
+    - Melakukan instalasi dan mengelola server berbasis sistem operasi Ubuntu dan CentOS di datacenter pelanggan.
+    - Melakukan instalasi dan mengelola kluster Openstack di datacenter pelanggan.
+    - Membuat dan mengembangkan konten dan materi untuk training Devops.
+    - Kolaborasi dengan tim Ops untuk merencanakan dan mengembangkan arsitektur dan teknologi yang akan diimplementasikan di datacenter pelanggan.    

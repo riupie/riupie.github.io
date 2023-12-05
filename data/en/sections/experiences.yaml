@@ -35,6 +35,8 @@ experiences:
     - Automate infrastructure provisioning on public cloud (GCP, AWS) using terraform
     - Automate boring tasks using Ansible
     - Support application development (Java, NodeJS, Python) using some CI/CD tools and platform such as Codeship/GCB/Buddy Works/Jenkins, Docker, Kubernetes, etc.
+    - Create architecture design for applications that will be impemented on client.
+    - Design, setup and maintain Kubernetes on-premise using Kubespray
 
 - company:
     name: Boer Technology

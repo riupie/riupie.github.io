@@ -1,230 +1,92 @@
 ---
-title: "Sampel Shortcodes"
-date: 2020-06-08T08:06:25+06:00
-description: Shortcodes sample
+title: "Tidy up our Prometheus metrics!"
+description: Tuning Grafana stack configuration to reduce resource usage and lower cardinality
+date: 2022-12-01T08:06:25+06:00
+hero: imgs/title.png
 menu:
   sidebar:
-    name: Sampel Shortcodes
-    identifier: shortcodes
-    weight: 40
+    name: Tidy up our Prometheus metrics!
+    identifier: posts-tidy-up-prometheus
+    weight: 10
+categories:
+  - devops
+tags:
+  - linux
+  - monitoring
 ---
 
-This is a sample post intended to test the followings:
+Dalam artikel ini, saya akan menjelaskan proses saya dalam menganalisa dan menyiapkan Prometheus, di mana ~~mungkin efektif~~ meningkatkan kinerja qeury dan juga untuk menangani kendala terkait kardinalitas. Untuk informasi, saya menggunakan technology stack berikut untuk system monitoring: Grafana, Prometheus, Thanos. Untuk metrics sendiri dikumpulkan dari beberapa sumber: node exporter, kube-state-metrics, dll.
 
-- Default hero image.
-- Different shortcodes.
+## 1. List metrics yang tidak terpakai
+Pertama, kita perlu membuat daftar metrics yang digunakan oleh Grafana. Untuk melakukan tugas ini, kita dapat menggunakan `mimirtool`.
 
-## Alert
+```bash
+$ mimirtool analyze grafana --address=${GRAFANA_URL} --key="${GRAFANA_API_TOKEN}"
+```
+Dalam kasus ini, saya mengeksekusi perintah berikut:
+```bash
+$ mimirtool analyze grafana --address=https://grafana.rahmatawe.com --key="glsa_jLKvTx6RLkGXXXX6XKS6DXlrulepsy_xxxxx"
+```
+Variabel `GRAFANA_API_TOKEN` dapat diperoleh dengan membuat service account di Grafana dashboard.
+![image](imgs/grafana-service-account.png)
 
-The following alerts are available in this theme.
+Perintah diatas akan menghasilkan output file `metrics-in-grafana.json`. Dengan file ini, kita akan melakukan perbandingan dengan metrics yang ada di Prometheus.
 
-{{< alert type="success" >}}
-This is sample alert with `type="success"`.
-{{< /alert >}}
+```bash
+#port forward ke prometheus
+$ kubectl port-forward prometheus-prometheus-0 9090:9090 -n monitoring
 
-{{< alert type="danger" >}}
-This is sample alert with `type="danger"`.
-{{< /alert >}}
+# Membandingkan grafana metrics and prometheus
+$ mimirtool analyze prometheus --grafana-metrics-file="metrics-in-grafana.json" --address=http://localhost:9090
 
-{{< alert type="warning" >}}
-This is sample alert with `type="warning"`.
-{{< /alert >}}
+INFO[0002] 73815 active series are being used in dashboards
+INFO[0002] Found 2495 metric names
+INFO[0017] 434700 active series are NOT being used in dashboards
+INFO[0017] 467 in use active series metric count
+INFO[0017] 2028 not in use active series metric count
+```
+**_NOTE:_**  Sesuaikan `prometheus-prometheus-0` dengan nama pod prometheus kalian dan `monitoring` dengan namespace dimana kamu men-deploy prometheus mu.
 
-{{< alert type="info" >}}
-This is sample alert with `type="info"`.
-{{< /alert >}}
+Eksekusi diatas akan menghasilkan file `prometheus-metrics.json`. Kemudian lakukan sorting.
 
-{{< alert type="dark" >}}
-This is sample alert with `type="dark"`.
-{{< /alert >}}
+```bash
+$ jq -r ".in_use_metric_counts[].metric" prometheus-metrics.json | sort > used_metrics.txt
+$ jq -r ".additional_metric_counts[].metric" prometheus-metrics.json | sort > unused_metrics.txt
+```
 
-{{< alert type="primary" >}}
-This is sample alert with `type="primary"`.
-{{< /alert >}}
+## 2. Menghapus metrics yang tidak terpakai
+Pada langkah 1, kita telah membuat daftar metrics yang terpakai dan tidak terpakai. Langkah selanjutnya, kita akan memeriksa metrics yang memiliki kardinalitas tinggi melalui dasboard Prometheus http://localhost:9090/tsdb-status.
+![image](imgs/prometheus-high-cardinality.png)
 
-{{< alert type="secondary" >}}
-This is sample alert with `type="secondary"`.
-{{< /alert >}}
+Hmm, mari kita cek metric `apiserver_request_duration_seconds_bucket`.
+```bash
+$ grep apiserver_request_duration_seconds_bucket u*_metrics.txt
+unused_metrics.txt:apiserver_request_duration_seconds_bucket
+```
+Kita bisa menghapus metric ini karena tidak digunakan oleh Grafana. Saya akan menghapusnya melalui ServiceMonitor. Kalian dapat menghapusnya dengan metode lain (misalnya: melalui config file prometheus langsung) tergantung pada setup kalian.
 
-## Image
-
-#### A sample image without any attribute.
-
-{{< img src="/posts/shortcodes/boat.jpg" title="A boat at the sea" >}}
-
-{{< vs 3 >}}
-
-#### A sample image with `height` and `width` attributes.
-
-{{< img src="/posts/shortcodes/boat.jpg" height="400" width="600" title="A boat at the sea" >}}
-
-{{< vs 3 >}}
-
-#### A center aligned image with `height` and `width` attributes.
-
-{{< img src="/posts/shortcodes/boat.jpg" height="400" width="600" align="center" title="A boat at the sea" >}}
-
-{{< vs 3 >}}
-
-#### A image with `float` attribute.
-
-{{< img src="/posts/shortcodes/boat.jpg" height="200" width="500" float="right" title="A boat at the sea" >}}
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras egestas lectus sed leo ultricies ultricies. Praesent tellus risus, eleifend vel efficitur ac, venenatis sit amet sem. Ut ut egestas erat. Fusce ut leo turpis. Morbi consectetur sed lacus vitae vehicula. Cras gravida turpis id eleifend volutpat. Suspendisse nec ipsum eu erat finibus dictum. Morbi volutpat nulla purus, vel maximus ex molestie id. Nullam posuere est urna, at fringilla eros venenatis quis.
-
-Fusce vulputate dolor augue, ut porta sapien fringilla nec. Vivamus commodo erat felis, a sodales lectus finibus nec. In a pulvinar orci. Maecenas suscipit eget lorem non pretium. Nulla aliquam a augue nec blandit. Curabitur ac urna iaculis, ornare ligula nec, placerat nulla. Maecenas aliquam nisi vitae tempus vulputate.
-
-## Split
-
-This theme support splitting the page into as many columns as you wish.
-
-#### Two column split
-
-{{< split 6 6>}}
-
-##### Left Column
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras egestas lectus sed leo ultricies ultricies.
-
+```yaml
 ---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: kube-apiserver
+  namespace: monitoring
+  labels:
+    prometheus: main
+    release: prometheus-operator
 
-##### Right Column
+...
 
-Fusce ut leo turpis. Morbi consectetur sed lacus vitae vehicula. Cras gravida turpis id eleifend volutpat.
+      metricRelabelings:
+      - sourceLabels: ["__name__"]
+        regex: 'apiserver_request_duration_seconds_bucket'
+        action: drop
 
-{{< /split >}}
+```
 
-#### Three column split
+Itu saja. Task simpel untuk menghapus metrics Prometheus yang tidak digunakan. Bye!
 
-{{< split 4 4 4 >}}
-
-##### Left Column
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras egestas lectus sed leo ultricies ultricies.
-
----
-
-##### Middle Column
-
-Aenean dignissim dictum ex. Donec a nunc vel nibh placerat interdum. 
-
----
-
-##### Right Column
-
-Fusce ut leo turpis. Morbi consectetur sed lacus vitae vehicula. Cras gravida turpis id eleifend volutpat.
-
-{{< /split >}}
-
-## Vertical Space
-
-Give vertical space between two lines.
-
-This is line one.
-{{< vs 4>}}
-This is line two. It should have `4rem` vertical space with previous line.
-
-## Video
-
-{{< video src="/videos/sample.mp4" >}}
-
-<!-- markdown-link-check-disable-next-line -->
-Video by [Rahul Sharma](https://www.pexels.com/@rahul-sharma-493988) from [Pexels](https://www.pexels.com).
-
-## Mermaid
-
-Here, are few example of mermaid shortcode.
-
-**Graph:**
-
-{{< mermaid align="left" >}}
-graph LR;
-    A[Hard edge] -->|Link text| B(Round edge)
-    B --> C{Decision}
-    C -->|One| D[Result one]
-    C -->|Two| E[Result two]
-{{< /mermaid >}}
-
-**Sequence Diagram:**
-
-{{< mermaid >}}
-sequenceDiagram
-    participant Alice
-    participant Bob
-    Alice->>John: Hello John, how are you?
-    loop Healthcheck
-        John->>John: Fight against hypochondria
-    end
-    Note right of John: Rational thoughts <br/>prevail!
-    John-->>Alice: Great!
-    John->>Bob: How about you?
-    Bob-->>John: Jolly good!
-{{< /mermaid >}}
-
-**Gantt diagram:**
-
-{{< mermaid >}}
-gantt
-  dateFormat  YYYY-MM-DD
-  title Adding GANTT diagram to mermaid
-  excludes weekdays 2014-01-10
-
-section A section
-  Completed task            :done,    des1, 2014-01-06,2014-01-08
-  Active task               :active,  des2, 2014-01-09, 3d
-  Future task               :         des3, after des2, 5d
-  Future task2               :         des4, after des3, 5d
-{{< /mermaid >}}
-
-**Class Diagram:**
-
-{{< mermaid >}}
-classDiagram
-  Class01 <|-- AveryLongClass : Cool
-  Class03 *-- Class04
-  Class05 o-- Class06
-  Class07 .. Class08
-  Class09 --> C2 : Where am i?
-  Class09 --* C3
-  Class09 --|> Class07
-  Class07 : equals()
-  Class07 : Object[] elementData
-  Class01 : size()
-  Class01 : int chimp
-  Class01 : int gorilla
-  Class08 <--> C2: Cool label
-{{< /mermaid >}}
-
-**Git Graph:**
-
-{{< mermaid background="black" align="right" >}}
-gitGraph:
-options
-{
-    "nodeSpacing": 150,
-    "nodeRadius": 10
-}
-end
-commit
-branch newbranch
-checkout newbranch
-commit
-commit
-checkout master
-commit
-commit
-merge newbranch
-{{< /mermaid >}}
-
-**ER Diagram:**
-
-{{< mermaid >}}
-erDiagram
-    CUSTOMER ||--o{ ORDER : places
-    ORDER ||--|{ LINE-ITEM : contains
-    CUSTOMER }|..|{ DELIVERY-ADDRESS : uses
-{{< /mermaid >}}
-
-## Gist
-
-{{< gist hossainemruz 4ad86c9b6378677e14eff12713e75e44 >}}
+Ref:
+* https://medium.com/@dotdc/prometheus-performance-and-cardinality-in-practice-74d5d9cd6230
+* https://www.robustperception.io/dropping-metrics-at-scrape-time-with-prometheus/
