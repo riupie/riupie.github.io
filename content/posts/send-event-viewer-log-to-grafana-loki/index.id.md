@@ -1,11 +1,11 @@
 ---
-title: Send Log from Event Viewer on Windows Server 2019 to Grafana Loki
-description: Send Log from Event Viewer on Windows Server 2019 to Grafana Loki
+title: Panduan Mengirim Log dari Event Viewer di Windows Server 2019 ke Grafana Loki
+description: Panduan Mengirim Log dari Event Viewer di Windows Server 2019 ke Grafana Loki
 date: 2022-04-15T08:06:25+06:00
 hero: imgs/title.png
 menu:
   sidebar:
-    name: Send Log from Event Viewer on Windows Server 2019 to Grafana Loki
+    name: Panduan Mengirim Log dari Event Viewer di Windows Server 2019 ke Grafana Loki
     identifier: posts-send-event-viewer-log-to-grafana-loki
     weight: 10
 categories:
@@ -16,7 +16,7 @@ tags:
 
 ---
 
-In the realm of server management, the ability to efficiently gather, analyze, and visualize logs is paramount. Windows Server 2019 comes equipped with Event Viewer, a powerful tool for viewing and managing event logs. Grafana Loki, on the other hand, is an open-source logging backend that allows for efficient log aggregation and querying. Integrating Event Viewer logs from Windows Server 2019 into Grafana Loki can significantly enhance the monitoring and troubleshooting capabilities of your infrastructure. This guide will walk you through the process of sending logs from Event Viewer to Grafana Loki for centralized analysis and visualization.
+Dalam manajemen server, kemampuan untuk mengumpulkan, menganalisis, dan memvisualisasikan log dengan efisien sangatlah penting. Windows Server 2019 dilengkapi dengan Event Viewer, sebuah tool yang powerful untuk melihat dan mengelola log event. Di sisi lain, Grafana Loki adalah backend logging open-source yang memungkinkan untuk agregasi log dan query yang efisien. Mengintegrasikan log Event Viewer dari Windows Server 2019 ke Grafana Loki dapat secara signifikan meningkatkan kemampuan pemantauan dan pemecahan masalah dari infrastruktur kita. Panduan ini akan memberikan gambaran proses pengiriman log dari Event Viewer ke Grafana Loki untuk analisis dan visualisasi log yang terpusat.
 
 ### Environment
 
@@ -42,20 +42,20 @@ curl -O -L "https://github.com/grafana/loki/releases/download/v2.5.0/loki-linux-
 
 #### 2. Setup loki binary
 ```bash
-# Unzip package
+# Ekstrak paket
 unzip loki-linux-amd64.zip
 
-# Grant execute permission
+# Berikan izin eksekusi
 chmod +x loki-linux-amd64
 
-# Create directory for loki installation
+# Buat direktori untuk instalasi loki
 sudo mkdir -p /opt/loki/{bin,conf,data}
 
-# Move loki binary
+# Pindahkan loki binary
 mv loki-linux-amd64 /opt/loki/bin/loki
 ```
-#### 3. Setup loki configuration
-Default configuration can be retrieved from [here](https://raw.githubusercontent.com/grafana/loki/master/cmd/loki/loki-local-config.yaml). I create loki config on `/opt/loki/config/loki-local-config.yaml` using below content:
+#### 3. Setup konfigurasi loki
+Konfigurasi default dapat diperoleh dari [sini](https://raw.githubusercontent.com/grafana/loki/master/cmd/loki/loki-local-config.yaml). Saya membuat konfigurasi loki di `/opt/loki/config/loki-local-config.yaml` dengan isi berikut:
 ```yaml
 auth_enabled: false
  
@@ -133,24 +133,24 @@ analytics:
   reporting_enabled: false
 ```
 
-On above configuration, there is configuration for alertmanager but we will not include alertmanager installation in this post.
+Pada konfigurasi di atas, terdapat konfigurasi untuk AlertManager, tetapi saya tidak akan menyertakan instalasi AlertManager dalam artikel ini.
 
-#### 4. Create system user for loki
+#### 4. Buat system user untuk loki
 ```bash
 sudo useradd --system loki
 ```
 
-#### 5. Change permission on loki directory
+#### 5. Ubah permission pada direktori loki
 ```bash
-# Change ownership
+# Ubah ownership
 sudo chown -R loki:loki /opt/loki
 
 # Restore SELinux label
 sudo restorecon -vRF /opt/loki/
 ```
 
-#### 6. Run loki service on systemd
-First, create systemd file for loki on `/etc/systemd/system/loki.service`. Paste below content.
+#### 6. Jalankan service loki dengan systemd
+Pertama, buat file systemd untuk loki di `/etc/systemd/system/loki.service`. Salin konfigurasi berikut.
 
 ```ini
 [Unit]
@@ -166,13 +166,13 @@ Restart=always
 [Install]
 WantedBy=multi-user.target
 ```
-Then, run loki service.
+Lalu, jalankan service loki.
 
 ```bash
 sudo systemctl enable --now loki.service
 ```
 
-#### 7. Open port for loki service
+#### 7. Open port untuk service loki
 ```bash
 sudo firewall-cmd --add-port 3100/tcp --permanent
 sudo firewall-cmd --reload
@@ -189,28 +189,28 @@ curl -O -L https://dl.grafana.com/oss/release/grafana-8.4.6-1.x86_64.rpm
 sudo yum localinstall grafana-8.4.6-1.x86_64.rpm
 ```
 
-#### 3. Start grafana service
+#### 3. Jalankan service grafana
 ```bash
 sudo systemctl enable --now grafana-server.service
 ```
-#### 4. Open port for grafana service
+#### 4. Open port untuk service grafana
 ```bash
 sudo firewall-cmd --add-port 3000/tcp --permanent
 sudo firewall-cmd --reload
 ```
-#### 5. Add Loki datasource to Grafana.
-Open grafana URL on 10.54.54.6:3000 then add Loki as datasource.
+#### 5. Tambahkan datasource Loki di Grafana.
+Buka URL grafana on 10.54.54.6:3000 lalu tambahkan loki sebagai datasource.
 ![lok datasource](imgs/loki-ds.png)
 
 ### Setup Promtail
 
 #### 1. Download promtail binary
-To collect log from vent Viewer on Windows Server, we need to setup promtail. Binary file can be downloaded in [here](https://github.com/grafana/loki/releases/download/v2.5.0/promtail-windows-amd64.exe.zip). Move the exctracted file to `C:\Program Files\promtail`, see below for detail.
+TUntuk mengumpulkan log dari Event Viewer di Windows Server, kita perlu setup promtail. Binary file dapat diunduh di [sini](https://github.com/grafana/loki/releases/download/v2.5.0/promtail-windows-amd64.exe.zip). Pindahkan file yang diekstrak ke `C:\Program Files\promtail`, lihat detailnya di bawah.
 ![Promtail Directory](imgs/promtail-dir.png)
-For new installation, it should be contain only the binary file `promtail-windows-amd64.exe`.
+Untuk instalasi baru, seharusnya hanya berisi binary file `promtail-windows-amd64.exe`.
 
-#### 2. Create promtail configuration
-Create promtail configuration file `promtail-local-config.yaml` with following content.
+#### 2. Buat konfigurasi promtail
+Buat file konfigurasi promtail `promtail-local-config.yaml` dengan isi berikut.
 ```yaml
 server:
   http_listen_port: 9080
@@ -279,32 +279,32 @@ scrape_configs:
 ```
 
 #### 3. Test promtail
-Test the configuration by running promtail directly via Powershell. Use Ctrl+C to stop program.
+Uji konfigurasi dengan menjalankan promtail langsung melalui Powershell. Gunakan Ctrl+C untuk menghentikan program.
 ```bash
 & 'C:\Program Files\promtail\promtail-windows-amd64.exe' --config.file='C:\Program Files\promtail\promtail-local-config.yaml'
 ```
 
-#### 4. Run promtail using windows service wrapper.
-There are some service wrapper on Windows, for example: sc.exe, nssm.exe and winsw. Windows has built in service wrapper: sc.exe, but when I use `sc.exe` to run promtail it always return error: `StartService FAILED 1053`. I'm not really familiar with Windows Server, so still figuring out why this error appear. So, I use [nssm](https://nssm.cc/download) to wrap my promtail. You only need to download, unzip it and run below command.
+#### 4. Jalankan promtail menggunakan windows service wrapper.
+Ada beberapa service wrapper di Windows, contohnya: sc.exe, nssm.exe, dan winsw. Windows memiliki service wrapper bawaan: sc.exe, tetapi saat saya menggunakan `sc.exe` untuk menjalankan promtail, selalu muncul error:: `StartService FAILED 1053`. Saya tidak terlalu familiar dengan Windows Server, jadi masih mencari tahu mengapa kesalahan ini muncul. Jadi, saya menggunakan [nssm](https://nssm.cc/download) sebagai service wrapper untuk promtail. Kalian hanya perlu mengunduhnya, ekstrak, dan jalankan perintah di bawah ini.
 ```bash
 .\nssm.exe install promtail
 ```
-Boom, GUI windows will appear. Set the setting like below.
+Boom, GUI windows akan muncul. Atur konfigurasi berikut.
 ![nssm GUI](imgs/nssm-config.png)
-You can also bypass the GUI, with `.\nssm install <servicename> <application> [<options>]`.
+Kalian juga dapat  mem-bypass GUI, dengan `.\nssm install <servicename> <application> [<options>]`.
 
-After service created, configure log file.
+Setelah layanan dibuat, konfigurasikan file log.
 ```bash
 .\nssm.exe set promtail AppStderr 'C:\Program Files\promtail\promtail-error.log'
 .\nssm.exe set promtail AppStdout 'C:\Program Files\promtail\promtail.log'
 ```
 
-Then, start the service.
+Lalu, jalankan service.
 ```bash
 .\nssm.exe start promtail
 ```
 
-#### 5. Open Grafana to check incoming logs
+#### 5. Buka Grafana untuk memeriksa log yang masuk
 ![grafana loki logs](imgs/loki-query.png)
 
 References:

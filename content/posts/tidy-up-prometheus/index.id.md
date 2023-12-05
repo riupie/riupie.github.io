@@ -1,11 +1,11 @@
 ---
-title: "Tidy up our Prometheus metrics!"
+title: "Tips membersihkan Prometheus metrics"
 description: Tuning Grafana stack configuration to reduce resource usage and lower cardinality
 date: 2022-12-01T08:06:25+06:00
 hero: imgs/title.png
 menu:
   sidebar:
-    name: Tidy up our Prometheus metrics!
+    name: Tips membersihkan Prometheus metrics
     identifier: posts-tidy-up-prometheus
     weight: 10
 categories:
