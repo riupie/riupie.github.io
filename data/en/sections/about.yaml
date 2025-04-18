@@ -11,8 +11,8 @@ section:
 designation: Site Reliability Engineer
 # your company information
 company:
-  name: Pintu
-  url: "https://pintu.co.id"
+  name: Confidential
+  #url: "https://pintu.co.id"
 
 # your resume. this file path should be relative to you "static" directory
 #resume: "files/resume.pdf"
