@@ -11,6 +11,13 @@ section:
 # Your experiences
 experiences:
 - company:
+    name: Confidential
+    location: Jakarta
+  positions:
+  - designation: Site Reliability Engineer
+    start: Nov 2024
+
+- company:
     name: Pintu Kemana Saja
     url: "https://pintu.co.id"
     location: Jakarta
@@ -18,6 +25,7 @@ experiences:
   positions:
   - designation: Site Reliability Engineer
     start: Jan 2022
+    end: Nov 2024
 
 - company:
     name: GDP Labs
