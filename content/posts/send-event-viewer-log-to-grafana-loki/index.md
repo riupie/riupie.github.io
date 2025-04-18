@@ -17,21 +17,11 @@ tags:
 
 In the realm of server management, the ability to efficiently gather, analyze, and visualize logs is paramount. Windows Server 2019 comes equipped with Event Viewer, a powerful tool for viewing and managing event logs. Grafana Loki, on the other hand, is an open-source logging backend that allows for efficient log aggregation and querying. Integrating Event Viewer logs from Windows Server 2019 into Grafana Loki can significantly enhance the monitoring and troubleshooting capabilities of your infrastructure. This guide will walk you through the process of sending logs from Event Viewer to Grafana Loki for centralized analysis and visualization.
 
-### Environment
+{{< mermaid align="center" >}}
+graph LR
+    A[Windows Server 2019<br/>10.54.54.219<br/><br/>Promtail] -->|push| B[RHEL 8<br/>10.54.54.6<br/><br/>Grafana + Loki]
 
-<div style="text-align:right"><img src="imgs/infra-diagram.png" /></div>
-
-```bash
-# Servers
-ag-rh2 : 10.54.54.6 (Grafana + Loki)
-win2k19 : 10.54.54.219 (Promtail)
-
-# OS Packages Release
-RHEL 8.4
-Windows Server 2019
-Loki 2.5
-Grafana 8.4.6
-```
+{{< /mermaid >}}
 
 ### Setup Loki
 #### 1. Download package Loki
