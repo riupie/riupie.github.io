@@ -23,6 +23,9 @@ summary: 'An IT Enthusiast interested in cloud computing, devops and security. L
 # your social links
 # give as many as you want. use font-awesome for the icons.
 socialLinks:
+- name: Blog
+  icon: "fa-solid fa-blog"
+  url: "https://blog.riupie.com"
 - name: Email
   icon: "fas fa-envelope"
   url: "rahmataw96@gmail.com"
