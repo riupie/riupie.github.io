@@ -11,11 +11,16 @@ section:
 # Your experiences
 experiences:
 - company:
-    name: Confidential
+    name: PT Central Finansial X
+    url: "https://www.cfx.co.id"
     location: Jakarta
   positions:
-  - designation: Site Reliability Engineer
+  - designation: Engineering Manager
     start: Nov 2024
+    responsibilities:
+    - Built and led the SRE function from the ground up
+    - Led the SRE team through multiple external audits and ensured full compliance with regulatory requirements(ISO 27001, OJK)
+    - Worked closely with security, dev, and complience teams to improve deployment safety, incident preparedness, and system scalability.
 
 - company:
     name: Pintu Kemana Saja
@@ -26,25 +31,32 @@ experiences:
   - designation: Site Reliability Engineer
     start: Jan 2022
     end: Nov 2024
+    responsibilities:
+    - Lead migration by merging infrastructure on AWS, reducing operational complexity and cost
+    - Contributed to core retail platform infrastructure team, helping maintain uptime for systems processing $100M+ monthly transaction volume
+    - Implemented comprehensive observability stack with Datadog APM
+    - Implemented monitoring system for infrastructure using Grafana, Prometheus and Thanos
 
 - company:
     name: GDP Labs
-    url: "https://www.example.com"
+    url: "https://www.gdplabs.id"
     location: Jakarta
     overview: GDP Labs is a software product development-centric organization based in Indonesia.
   positions:    
   - designation: Senior Site Reliability Engineer
     start: Apr 2022
     end: Dec 2022
+    responsibilities:
+    - Lead a SRE team specializing in application delivery, giving implementation solutions for containerized services on air gapped environments.
+    - Spearheaded kubernetes migration from GKE to On-premise with zero downtime
   - designation: Site Reliability Engineer
     start: Mar 2021
     end: Apr 2022
     responsibilities:
-    - Automate infrastructure provisioning on public cloud (GCP, AWS) using terraform
-    - Automate boring tasks using Ansible
-    - Support application development (Java, NodeJS, Python) using some CI/CD tools and platform such as Codeship/GCB/Buddy Works/Jenkins, Docker, Kubernetes, etc.
-    - Create architecture design for applications that will be impemented on client.
-    - Design, setup and maintain Kubernetes on-premise using Kubespray
+    - Automated infrastructure provisioning on public cloud (GCP, AWS) using Terraform
+    - Automated containerized application deployment on customer infrastructure.
+    - Support application development (Java, NodeJS) using some CI/CD tools and platform, like Codeship/GCB/Buddy Works, Docker, Kubernetes, etc.
+    - Monitoring and logging infrastructure using Prometheus, Grafana and Datadog
 
 - company:
     name: Boer Technology
@@ -56,8 +68,6 @@ experiences:
     start: Mar 2019
     end: Dec 2020
     responsibilities:
-    - Deploy and maintain Linux based OS such as Ubuntu Server and CentOS on customer site. 
-    - Deploy and maintain Openstack cluster on customer site.
-    - Develop content and material for Devops training.
-    - Collaborate with Ops team to plan and develop technology and architecture which will be implemented on customer site. 
-    - Collaborate with other teams on testing Open Source and Cloud Native related technology.
+    - Setup private cloud clusters on financial institutions on top of Openstack with more than 100+ servers using Ansible, reducing deployment time up to 80%.
+    - Designed and delivered DevOps training materials and content
+    - Collaborated with operations and cross-functional teams to plan, develop, and implement cloud-native and open-source solutions.
